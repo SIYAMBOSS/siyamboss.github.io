@@ -3,34 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM BOSS PRO | Portfolio</title>
+    <title>SIYAM BOSS PRO | ACCESS GRANTED</title>
     <style>
-        body { font-family: 'Arial', sans-serif; background-color: #0a0a0a; color: #00ff00; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; }
-        .container { border: 2px solid #00ff00; padding: 30px; border-radius: 15px; box-shadow: 0 0 20px #00ff00; }
-        h1 { font-size: 2.5em; margin-bottom: 10px; text-transform: uppercase; }
-        p { font-size: 1.1em; color: #ffffff; }
-        .contact-info { margin-top: 20px; }
-        .btn { display: inline-block; margin: 10px; padding: 10px 20px; color: #000; background-color: #00ff00; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
-        .btn:hover { background-color: #ffffff; color: #000; box-shadow: 0 0 10px #ffffff; }
+        /* Matrix Animation Background */
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: -1; }
+
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 30px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            box-shadow: 0 0 20px #00ff00;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h1 { font-size: 2em; text-shadow: 0 0 10px #00ff00; margin-bottom: 5px; }
+        
+        /* Typing Effect */
+        .typing {
+            border-right: 2px solid #00ff00;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            animation: typing 3s steps(30, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #00ff00 } }
+
+        .btn {
+            display: block;
+            margin: 15px 0;
+            padding: 12px;
+            color: #00ff00;
+            text-decoration: none;
+            border: 1px solid #00ff00;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: 0.3s;
+            background: transparent;
+        }
+
+        .btn:hover {
+            background-color: #00ff00;
+            color: black;
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        .status { font-size: 0.8em; color: #ff0000; margin-bottom: 20px; text-transform: uppercase; }
         .flag { font-size: 2em; margin-bottom: 10px; }
     </style>
 </head>
 <body>
+
+    <canvas id="matrix"></canvas>
+
     <div class="container">
         <div class="flag">🇵🇸</div>
+        <div class="status">[ SYSTEM STATUS: SECURED ]</div>
         <h1>SIYAM BOSS PRO</h1>
-        <p>Expert in Termux, Scripting & Cyber Security</p>
+        <p class="typing">Connecting to SIYAM-TOOL Server...</p>
         
-        <div class="contact-info">
-            <p><strong>Email:</strong> sadaf245sz@gmail.com</p>
-            <p><strong>WhatsApp:</strong> +8801315127341</p>
-        </div>
+        <a href="https://github.com/SIYAMBOSS" class="btn" target="_blank">> VIEW REPOSITORIES</a>
+        <a href="https://wa.me/8801315127341?text=Target%20Acquired" class="btn" style="border-color: #23d366; color: #23d366;">> WHATSAPP (ENCRYPTED)</a>
+        <a href="https://facebook.com/sadaf245sz" class="btn">> FACEBOOK PROFILE</a>
 
-        <div class="links">
-            <a href="https://github.com/SIYAMBOSS" class="btn" target="_blank">GitHub Tools</a>
-            <a href="https://facebook.com/sadaf245sz" class="btn" target="_blank">Facebook</a>
+        <div style="margin-top: 20px; font-size: 0.7em; color: #888;">
+            IP LOGGING: ENABLED<br>
+            LOCATION: DHAKA, BD<br>
+            © 2026 SIYAM BOSS PRO
         </div>
-        <p style="font-size: 0.8em; margin-top: 20px; color: #555;">© 2026 Developed by SIYAM BOSS</p>
     </div>
+
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) drops[i] = 1;
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px arial';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 33);
+    </script>
 </body>
 </html>
