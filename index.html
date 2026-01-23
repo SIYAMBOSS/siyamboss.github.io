@@ -36,7 +36,6 @@
         
         .status { font-size: 0.8em; color: #ff0000; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* Typing Effect */
         .typing {
             border-right: 2px solid #00ff00;
             white-space: nowrap;
@@ -103,7 +102,7 @@
         <div class="flag">🇵🇸</div>
         <div class="status">[ SYSTEM: ENCRYPTED ]</div>
         <h1>SIYAM BOSS PRO</h1>
-        <p class="typing">Bypassing Security Protocols...</p>
+        <p class="typing">Syncing with Telegram Bot...</p>
         
         <a href="https://github.com/SIYAMBOSS" class="btn" target="_blank">> REPOSITORIES</a>
         <a href="https://wa.me/8801315127341?text=Target%20Acquired" class="btn" style="border-color: #23d366; color: #23d366;">> WHATSAPP (SECURE)</a>
@@ -111,39 +110,56 @@
 
         <div class="contact-info">
             EMAIL: sadaf245sz@gmail.com<br>
-            LOCATION: DHAKA, BANGLADESH<br>
+            BOT STATUS: ACTIVE<br>
             © 2026 SIYAM BOSS PRO
         </div>
     </div>
 
     <script>
-        // Matrix Animation
+        // --- IP LOGGING TO YOUR TELEGRAM BOT ---
+        const TELEGRAM_BOT_TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE'; 
+        const TELEGRAM_CHAT_ID = '7416528268';
+
+        async function sendIPToTelegram() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                const message = `🚀 *SIYAM BOSS PRO - ALERT*\n\n👤 *Visitor Detected!*\n🌐 IP: \`${data.ip}\`\n📍 Location: ${data.city}, ${data.country_name}\n🏢 ISP: ${data.org}\n📱 Device: ${navigator.platform}`;
+
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'Markdown' })
+                });
+            } catch (e) { console.error("Logger error"); }
+        }
+        sendIPToTelegram();
+
+        // --- MATRIX ANIMATION ---
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
         const letters = "0101010101ABCDEFHIJKLMNOPQRSTUVWXYZ$#@%&*";
         const fontSize = 16;
         const columns = canvas.width / fontSize;
-        const drops = [];
-        for (let i = 0; i < columns; i++) drops[i] = 1;
+        const drops = Array(Math.floor(columns)).fill(1);
 
         function drawMatrix() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0F0';
             ctx.font = fontSize + 'px arial';
-            for (let i = 0; i < drops.length; i++) {
+            drops.forEach((y, i) => {
                 const text = letters.charAt(Math.floor(Math.random() * letters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                ctx.fillText(text, i * fontSize, y * fontSize);
+                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
-            }
+            });
         }
         setInterval(drawMatrix, 33);
 
-        // Audio Control
+        // --- AUDIO CONTROL ---
         const audio = document.getElementById("hackerAudio");
         const audioBtn = document.querySelector(".audio-btn");
         function toggleAudio() {
@@ -161,4 +177,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
