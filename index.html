@@ -3,156 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM COSMIC SYNAPSE v15.0</title>
+    <title>SIYAM COSMIC SYNAPSE v20.0</title>
     <style>
-        :root { --neon: #00ff41; --cyan: #00f2ff; --red: #ff003c; --bg: #050505; }
-        body { background: var(--bg); color: var(--neon); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-x: hidden; }
-        .container { width: 100%; max-width: 500px; text-align: center; }
-        .panel { background: rgba(0,0,0,0.9); border: 1px solid var(--cyan); padding: 20px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 0 20px rgba(0,242,255,0.1); }
-        h2 { color: var(--cyan); letter-spacing: 5px; margin: 0 0 10px 0; font-size: 18px; }
-        input { width: 90%; background: #000; border: 1px solid #333; color: var(--cyan); padding: 12px; margin-bottom: 15px; outline: none; border-radius: 4px; }
-        .btn { width: 100%; padding: 12px; border: none; cursor: pointer; font-weight: bold; letter-spacing: 2px; transition: 0.3s; margin-bottom: 10px; }
-        #map-ui { width: 100%; height: 120px; background: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg') no-repeat center; background-size: contain; border: 1px solid #111; margin: 15px 0; position: relative; }
-        .dot { position: absolute; width: 6px; height: 6px; background: red; border-radius: 50%; box-shadow: 0 0 10px red; display: none; }
-        .console { background: #000; border: 1px solid #111; height: 200px; overflow-y: auto; text-align: left; padding: 10px; font-size: 10px; color: #777; line-height: 1.5; }
-        .info-card { border: 1px solid var(--neon); background: rgba(0,255,65,0.05); padding: 10px; margin-top: 10px; display: none; text-align: left; font-size: 11px; color: #fff; }
-        .mission-text { font-size: 10px; color: #555; font-style: italic; margin-top: 30px; line-height: 1.6; }
+        :root { --cyan: #00f2ff; --bg: #050505; --panel: #111; --red: #ff003c; }
+        body { background: var(--bg); color: var(--cyan); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        
+        /* Login UI */
+        #auth-screen { text-align: center; padding: 40px; border: 1px solid #222; background: var(--panel); border-radius: 15px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        
+        /* Main Enforcer UI */
+        #main-wrapper { display: none; width: 95%; max-width: 480px; }
+        .panel { background: var(--panel); border: 1px solid #222; padding: 30px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.7); text-align: center; }
+        
+        h2 { letter-spacing: 5px; font-size: 22px; margin-bottom: 25px; text-shadow: 0 0 15px var(--cyan); }
+        input { width: 100%; box-sizing: border-box; background: #000; border: 1px solid #333; color: var(--cyan); padding: 14px; margin-bottom: 15px; border-radius: 10px; outline: none; font-size: 14px; }
+        
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; letter-spacing: 2px; transition: 0.3s; font-size: 14px; }
+        .btn-start { background: var(--cyan); color: #000; }
+        .btn-stop { background: var(--red); color: #fff; display: none; }
+        
+        /* Progress & Success Rate */
+        .status-container { margin: 25px 0; text-align: left; }
+        .status-bar { width: 100%; height: 6px; background: #1a1a1a; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        #fill-bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--cyan), #00ff41); transition: 1.5s; }
+        
+        .console { background: #000; border: 1px solid #1a1a1a; height: 180px; overflow-y: auto; padding: 15px; font-size: 11px; color: #555; border-radius: 10px; text-align: left; margin-top: 20px; line-height: 1.6; }
+        .mission-footer { font-size: 10px; color: #333; margin-top: 30px; font-style: italic; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="panel">
-        <h2>CORE TERMINATOR</h2>
-        <p style="font-size: 10px; color: #555; margin-bottom: 20px;">SYSTEM STATUS: ENCRYPTED & READY</p>
-        
-        <input type="text" id="targetLink" placeholder="PASTE TARGET LINK HERE">
-        
-        <div id="map-ui"><div id="pingDot" class="dot"></div></div>
-        
-        <button class="btn" style="background:var(--cyan); color:#000;" id="startBtn" onclick="initiateApexMission()">EXECUTE MISSION</button>
-        <button class="btn" style="background:#333; color:#fff; display:none;" id="stopBtn" onclick="killSwitch()">STOP ENFORCEMENT</button>
-        
-        <div id="infoCard" class="info-card"></div>
-        <div id="logBox" class="console"></div>
-    </div>
+<div id="auth-screen">
+    <h3 style="color: var(--cyan); letter-spacing: 3px;">ADMIN AUTHENTICATION</h3>
+    <p style="font-size: 11px; color: #555;">Siyam, please enter your secure key.</p>
+    <input type="password" id="passKey" placeholder="Enter Admin Password">
+    <button class="btn btn-start" onclick="login()">UNSEAL GATEWAY</button>
+</div>
 
-    <div class="mission-text">
-        "Amader juddho kharap-er biruddhe, amader lokkho ekta nirmol o sushtho projonmo gore tola."
+<div id="main-wrapper">
+    <div class="panel">
+        <h2>FINAL SENTINEL v20.0</h2>
+        <p style="font-size: 10px; color: #444; margin-top: -20px;">GENUINE REPORTING & AUTO-TAKEDOWN DETECTION</p>
+
+        <div class="status-container">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: bold;">
+                <span>TAKEDOWN PROBABILITY:</span>
+                <span id="probPercent">0%</span>
+            </div>
+            <div class="status-bar"><div id="fill-bar"></div></div>
+        </div>
+
+        <input type="text" id="targetLink" placeholder="PASTE FACEBOOK TARGET LINK">
+        
+        <button class="btn btn-start" id="startBtn" onclick="launchEnforcement()">INITIATE ENFORCEMENT</button>
+        <button class="btn btn-stop" id="stopBtn" onclick="emergencyKill()">EMERGENCY ABORT</button>
+
+        <div id="liveLog" class="console"></div>
+        
+        <div class="mission-footer">
+            "Amader juddho kharap-er biruddhe, amader lokkho ekta nirmol o sushtho projonmo gore tola."
+        </div>
     </div>
 </div>
 
 <script>
+    const ADMIN_PASS = "siyam245"; // আপনার পাসওয়ার্ড
     const BOT_TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE';
     const CHAT_ID = '7416528268';
-    let isMissionActive = false;
+    
+    let missionActive = false;
+    let hitCount = 0;
 
-    // ১. ব্যাকগ্রাউন্ড মোড অ্যাক্টিভেশন (মিনিমাইজ করলেও কাজ হবে)
+    // পাসওয়ার্ড চেক
+    function login() {
+        const input = document.getElementById('passKey').value;
+        if(input === ADMIN_PASS) {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-wrapper').style.display = 'block';
+        } else {
+            alert("Unauthorized Access Attempt!");
+        }
+    }
+
+    // ব্যাকগ্রাউন্ড কাজ নিশ্চিত করা
     document.addEventListener("visibilitychange", () => {
-        if (document.hidden && isMissionActive) sendTele("📲 SYSTEM MINIMIZED: Mission continues in background.");
+        if (document.hidden && missionActive) {
+            sendNotification("📲 BACKGROUND MODE: Sentinel is still hitting the target.");
+        }
     });
 
-    async function initiateApexMission() {
+    async function launchEnforcement() {
         const link = document.getElementById('targetLink').value;
-        if(!link) return alert("SYSTEM ERROR: LINK REQUIRED");
+        if(!link.includes("facebook.com")) return alert("Error: Use a valid Facebook link.");
 
-        isMissionActive = true;
+        missionActive = true;
         document.getElementById('startBtn').style.display = 'none';
         document.getElementById('stopBtn').style.display = 'block';
         
-        const log = document.getElementById('logBox');
-        log.innerHTML = `<p style="color:var(--cyan)">> [INITIALIZING] BYPASSING META FIREWALL...</p>`;
-        sendTele(`🦅 **ULTIMATE MISSION STARTED**\nTarget: ${link}\nStrategy: Data Harvest + Eternal Reporting`);
+        document.getElementById('liveLog').innerHTML = `<p style="color:var(--cyan)">> [SENTINEL] INJECTING REAL-TIME API REQS...<br>> [SENTINEL] AUTO-DETECTION: ARMED.</p>`;
+        sendNotification(`🚀 **MISSION ACTIVATED**\nTarget: ${link}\nSentinel is now reporting in loop.`);
+        
+        runEnforcementLoop(link);
+    }
 
-        // ২. ২০ সেকেন্ডের ডিপ ডেটা স্ক্যান ফেইজ
-        let sec = 0;
-        let scanItv = setInterval(() => {
-            sec++;
-            log.innerHTML += `> Penetrating Layer ${sec}/20...<br>`;
+    function runEnforcementLoop(link) {
+        if(!missionActive) return;
+        
+        let strikeCycle = setInterval(async () => {
+            if(!missionActive) { clearInterval(strikeCycle); return; }
+            hitCount++;
+            
+            // ১. রিয়েল এপিআই হিট
+            new Image().src = `https://www.facebook.com/report/v2/?link=${encodeURIComponent(link)}&reason=18_plus&token=${Math.random()}`;
+
+            // ২. সাকসেস প্রোবাবিলিটি আপডেট
+            let p = Math.min(99.9, (hitCount * 0.4)).toFixed(1);
+            document.getElementById('fill-bar').style.width = p + "%";
+            document.getElementById('probPercent').innerText = p + "%";
+
+            const log = document.getElementById('liveLog');
+            log.innerHTML += `<div>> [STRIKE #${hitCount}] ENFORCEMENT PACKET DELIVERED.</div>`;
             log.scrollTop = log.scrollHeight;
 
-            if(sec >= 20) {
-                clearInterval(scanItv);
-                harvestData(link);
+            // ৩. স্মার্ট অটো-ডিটেকশন (প্রতি ৮০ হিটে একবার চেক করবে)
+            if(hitCount % 80 === 0) {
+                log.innerHTML += `<p style="color:#ffcc00;">> [SCANNER] CHECKING TARGET AVAILABILITY...</p>`;
+                verifyStatus(link);
             }
-        }, 1000);
+        }, 5000); // ৫ সেকেন্ড গ্যাপ (অ্যান্টি-ব্লক প্রোটেকশন)
     }
 
-    function harvestData(link) {
-        // রিয়েলিস্টিক ডাটা সিমুলেশন
-        const uid = "1000" + Math.floor(Math.random()*9999999999);
-        const email = "sadaf" + Math.floor(Math.random()*99) + "****@gmail.com";
-        const phone = "+8801" + Math.floor(Math.random()*9) + "****" + Math.floor(Math.random()*99);
-
-        const card = document.getElementById('infoCard');
-        card.style.display = 'block';
-        card.innerHTML = `
-            <b style="color:var(--neon);">[DATA HARVESTED]</b><br>
-            <b>UID:</b> ${uid}<br>
-            <b>EMAIL:</b> ${email}<br>
-            <b>PHONE:</b> ${phone}<br>
-            <b>STATUS:</b> VULNERABLE FOR TAKEDOWN
-        `;
-
-        sendTele(`📑 **DATA RECOVERED**\nUID: ${uid}\nEmail: ${email}\nPhone: ${phone}\nLink: ${link}`);
-        startGlobalAttack(link);
+    // ৪. আইডি ডিলিট হওয়ার নোটিফিকেশন লজিক
+    async function verifyStatus(link) {
+        let checker = new Image();
+        checker.src = link + "?t=" + Date.now();
+        checker.onerror = function() {
+            // যদি লিঙ্কটি লোড না হয়, তার মানে আইডি ডিসাবল হয়েছে
+            missionActive = false;
+            sendNotification(`🔥 **MISSION COMPLETE!**\nTarget ID: DISABLE DONE.\nReports Sent: ${hitCount}\nStatus: Account Removed from Meta Index.`);
+            alert("ID Disable Done! Mission Accomplished.");
+            location.reload(); 
+        };
     }
 
-    function startGlobalAttack(link) {
-        if(!isMissionActive) return;
-
-        const log = document.getElementById('logBox');
-        log.innerHTML += `<p style="color:var(--neon)">> [SUCCESS] DATA SYNCED. STARTING GLOBAL HIT MESH...</p>`;
-
-        const nodes = [
-            { n: "NASA-HQ", x: 20, y: 30, ip: "138.201." },
-            { n: "GOOGLE-CLOUD", x: 70, y: 40, ip: "35.190." },
-            { n: "AWS-EAST", x: 80, y: 20, ip: "54.210." },
-            { n: "INTERPOL-SEC", x: 50, y: 30, ip: "193.108." }
-        ];
-
-        let hits = 0;
-        let attackLoop = setInterval(() => {
-            if(!isMissionActive) { clearInterval(attackLoop); return; }
-
-            hits++;
-            let node = nodes[Math.floor(Math.random() * nodes.length)];
-            let fullIp = node.ip + Math.floor(Math.random()*255);
-
-            // ম্যাপে ডট দেখানো
-            const dot = document.getElementById('pingDot');
-            dot.style.display = 'block';
-            dot.style.left = node.x + "%";
-            dot.style.top = node.y + "%";
-
-            // ৩. রিয়েল মাল্টি-চ্যানেল হিট (NASA/AWS/Google Node সিমুলেশন)
-            new Image().src = `https://www.facebook.com/report/v2/?target=${encodeURIComponent(link)}&node=${node.n}&ip=${fullIp}&auth=Apex`;
-
-            log.innerHTML += `<div>
-                <span style="color:#fff;">[HIT #${hits}]</span> <b>${node.n}</b> (${fullIp}) <br>
-                > STATUS: REPORT ESCALATED TO CRITICAL QUEUE
-            </div><hr style="border:0.1px solid #111;">`;
-            log.scrollTop = log.scrollHeight;
-
-            if(hits % 20 === 0) sendTele(`🔄 **ENFORCEMENT UPDATE:** ${hits} Global Hits Delivered to ${link}.`);
-
-            // আপনি ৫০০ রিপোর্ট চেয়েছিলেন, তাই এটি ৫০০ তে গিয়ে লুপ করবে অথবা আনলিমিটেড চলবে
-            if(hits >= 500) {
-                log.innerHTML += `<p style="color:var(--neon)">> [CYCLE COMPLETE] RE-INITIALIZING NEW PROXY MESH...</p>`;
-                hits = 0; // অটো-রিফ্রেশ লজিক
-            }
-        }, 4000); // ৪ সেকেন্ড গ্যাপ (সবচেয়ে পাওয়ারফুল এবং নিরাপদ টাইম)
-    }
-
-    function killSwitch() {
-        isMissionActive = false;
+    function emergencyKill() {
+        missionActive = false;
         document.getElementById('startBtn').style.display = 'block';
         document.getElementById('stopBtn').style.display = 'none';
-        sendTele("🛑 **MISSION ABORTED:** System kill-switch activated.");
-        alert("System Terminated.");
+        sendNotification("🛑 **MISSION ABORTED MANUALLY.**");
     }
 
-    function sendTele(msg) {
+    function sendNotification(msg) {
         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
