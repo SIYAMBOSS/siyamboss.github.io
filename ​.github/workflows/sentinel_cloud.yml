@@ -1,0 +1,23 @@
+name: SIYAM_DYNAMIC_CLOUD
+on:
+  workflow_dispatch:
+    inputs:
+      target_link:
+        description: 'Target Profile Link'
+        required: true
+        default: ''
+
+jobs:
+  strike:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executing Multi-Node Strike
+        run: |
+          echo "Cloud Engine Active for Siyam..."
+          TARGET="${{ github.event.inputs.target_link }}"
+          for i in {1..1000}
+          do
+            curl -s "https://www.facebook.com/report/v2/?link=$TARGET&reason=18_plus" > /dev/null
+            echo "Strike $i delivered to $TARGET"
+            sleep 5
+          done
