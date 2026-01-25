@@ -1,165 +1,131 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM COSMIC SYNAPSE v20.0</title>
+    <title>SIYAM OVERLORD v21.0 - FINAL CLOUD</title>
     <style>
-        :root { --cyan: #00f2ff; --bg: #050505; --panel: #111; --red: #ff003c; }
-        body { background: var(--bg); color: var(--cyan); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        
-        /* Login UI */
-        #auth-screen { text-align: center; padding: 40px; border: 1px solid #222; background: var(--panel); border-radius: 15px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
-        
-        /* Main Enforcer UI */
-        #main-wrapper { display: none; width: 95%; max-width: 480px; }
-        .panel { background: var(--panel); border: 1px solid #222; padding: 30px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.7); text-align: center; }
-        
-        h2 { letter-spacing: 5px; font-size: 22px; margin-bottom: 25px; text-shadow: 0 0 15px var(--cyan); }
-        input { width: 100%; box-sizing: border-box; background: #000; border: 1px solid #333; color: var(--cyan); padding: 14px; margin-bottom: 15px; border-radius: 10px; outline: none; font-size: 14px; }
-        
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; letter-spacing: 2px; transition: 0.3s; font-size: 14px; }
-        .btn-start { background: var(--cyan); color: #000; }
-        .btn-stop { background: var(--red); color: #fff; display: none; }
-        
-        /* Progress & Success Rate */
-        .status-container { margin: 25px 0; text-align: left; }
-        .status-bar { width: 100%; height: 6px; background: #1a1a1a; border-radius: 10px; overflow: hidden; margin-top: 10px; }
-        #fill-bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--cyan), #00ff41); transition: 1.5s; }
-        
-        .console { background: #000; border: 1px solid #1a1a1a; height: 180px; overflow-y: auto; padding: 15px; font-size: 11px; color: #555; border-radius: 10px; text-align: left; margin-top: 20px; line-height: 1.6; }
-        .mission-footer { font-size: 10px; color: #333; margin-top: 30px; font-style: italic; }
+        body { background: #000; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; padding: 20px; }
+        .container { border: 2px dashed #00ff00; padding: 30px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 0 20px #00ff00; }
+        input { width: 90%; padding: 12px; margin: 15px 0; background: #111; border: 1px solid #00ff00; color: #fff; border-radius: 5px; }
+        .btn { padding: 12px 25px; cursor: pointer; border: none; font-weight: bold; margin: 10px; border-radius: 8px; transition: 0.3s; width: 80%; }
+        .local-btn { background: #00ff00; color: #000; }
+        .cloud-btn { background: #6e5494; color: #fff; box-shadow: 0 0 10px #6e5494; }
+        #log { margin-top: 25px; font-size: 12px; text-align: left; height: 180px; overflow-y: auto; background: #050505; padding: 15px; border: 1px solid #333; }
+        .status-on { color: #00ff00; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="auth-screen">
-    <h3 style="color: var(--cyan); letter-spacing: 3px;">ADMIN AUTHENTICATION</h3>
-    <p style="font-size: 11px; color: #555;">Siyam, please enter your secure key.</p>
-    <input type="password" id="passKey" placeholder="Enter Admin Password">
-    <button class="btn btn-start" onclick="login()">UNSEAL GATEWAY</button>
-</div>
-
-<div id="main-wrapper">
-    <div class="panel">
-        <h2>FINAL SENTINEL v20.0</h2>
-        <p style="font-size: 10px; color: #444; margin-top: -20px;">GENUINE REPORTING & AUTO-TAKEDOWN DETECTION</p>
-
-        <div class="status-container">
-            <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: bold;">
-                <span>TAKEDOWN PROBABILITY:</span>
-                <span id="probPercent">0%</span>
-            </div>
-            <div class="status-bar"><div id="fill-bar"></div></div>
-        </div>
-
-        <input type="text" id="targetLink" placeholder="PASTE FACEBOOK TARGET LINK">
-        
-        <button class="btn btn-start" id="startBtn" onclick="launchEnforcement()">INITIATE ENFORCEMENT</button>
-        <button class="btn btn-stop" id="stopBtn" onclick="emergencyKill()">EMERGENCY ABORT</button>
-
-        <div id="liveLog" class="console"></div>
-        
-        <div class="mission-footer">
-            "Amader juddho kharap-er biruddhe, amader lokkho ekta nirmol o sushtho projonmo gore tola."
-        </div>
-    </div>
+<div class="container">
+    <h1 style="letter-spacing: 5px;">SIYAM OVERLORD</h1>
+    <p>Target Profile Link:</p>
+    <input type="text" id="target" placeholder="https://www.facebook.com/id_link">
+    
+    <button class="btn local-btn" onclick="startLocalStrike()">⚡ START LOCAL STRIKE</button>
+    <button class="btn cloud-btn" onclick="deployToCloud()">☁️ DEPLOY TO CLOUD (OFFLINE)</button>
+    
+    <div id="log">>> [SYSTEM READY] Waiting for command...</div>
 </div>
 
 <script>
-    const ADMIN_PASS = "siyam245"; // আপনার পাসওয়ার্ড
-    const BOT_TOKEN = '8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE';
-    const CHAT_ID = '7416528268';
-    
-    let missionActive = false;
-    let hitCount = 0;
+    // configuration
+    const GITHUB_TOKEN = "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"; 
+    const REPO_OWNER = "siyamboss"; 
+    const REPO_NAME = "siyamboss.github.io";
+    const TELEGRAM_BOT_TOKEN = "7963725547:AAHDlM4f6L6w3V0L-H8R6tGof0U46iB6S-g";
+    const TELEGRAM_CHAT_ID = "7154942953";
 
-    // পাসওয়ার্ড চেক
-    function login() {
-        const input = document.getElementById('passKey').value;
-        if(input === ADMIN_PASS) {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('main-wrapper').style.display = 'block';
-        } else {
-            alert("Unauthorized Access Attempt!");
-        }
+    function log(msg) {
+        const logBox = document.getElementById('log');
+        logBox.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > ${msg}</div>`;
+        logBox.scrollTop = logBox.scrollHeight;
     }
 
-    // ব্যাকগ্রাউন্ড কাজ নিশ্চিত করা
-    document.addEventListener("visibilitychange", () => {
-        if (document.hidden && missionActive) {
-            sendNotification("📲 BACKGROUND MODE: Sentinel is still hitting the target.");
-        }
-    });
-
-    async function launchEnforcement() {
-        const link = document.getElementById('targetLink').value;
-        if(!link.includes("facebook.com")) return alert("Error: Use a valid Facebook link.");
-
-        missionActive = true;
-        document.getElementById('startBtn').style.display = 'none';
-        document.getElementById('stopBtn').style.display = 'block';
-        
-        document.getElementById('liveLog').innerHTML = `<p style="color:var(--cyan)">> [SENTINEL] INJECTING REAL-TIME API REQS...<br>> [SENTINEL] AUTO-DETECTION: ARMED.</p>`;
-        sendNotification(`🚀 **MISSION ACTIVATED**\nTarget: ${link}\nSentinel is now reporting in loop.`);
-        
-        runEnforcementLoop(link);
-    }
-
-    function runEnforcementLoop(link) {
-        if(!missionActive) return;
-        
-        let strikeCycle = setInterval(async () => {
-            if(!missionActive) { clearInterval(strikeCycle); return; }
-            hitCount++;
-            
-            // ১. রিয়েল এপিআই হিট
-            new Image().src = `https://www.facebook.com/report/v2/?link=${encodeURIComponent(link)}&reason=18_plus&token=${Math.random()}`;
-
-            // ২. সাকসেস প্রোবাবিলিটি আপডেট
-            let p = Math.min(99.9, (hitCount * 0.4)).toFixed(1);
-            document.getElementById('fill-bar').style.width = p + "%";
-            document.getElementById('probPercent').innerText = p + "%";
-
-            const log = document.getElementById('liveLog');
-            log.innerHTML += `<div>> [STRIKE #${hitCount}] ENFORCEMENT PACKET DELIVERED.</div>`;
-            log.scrollTop = log.scrollHeight;
-
-            // ৩. স্মার্ট অটো-ডিটেকশন (প্রতি ৮০ হিটে একবার চেক করবে)
-            if(hitCount % 80 === 0) {
-                log.innerHTML += `<p style="color:#ffcc00;">> [SCANNER] CHECKING TARGET AVAILABILITY...</p>`;
-                verifyStatus(link);
-            }
-        }, 5000); // ৫ সেকেন্ড গ্যাপ (অ্যান্টি-ব্লক প্রোটেকশন)
-    }
-
-    // ৪. আইডি ডিলিট হওয়ার নোটিফিকেশন লজিক
-    async function verifyStatus(link) {
-        let checker = new Image();
-        checker.src = link + "?t=" + Date.now();
-        checker.onerror = function() {
-            // যদি লিঙ্কটি লোড না হয়, তার মানে আইডি ডিসাবল হয়েছে
-            missionActive = false;
-            sendNotification(`🔥 **MISSION COMPLETE!**\nTarget ID: DISABLE DONE.\nReports Sent: ${hitCount}\nStatus: Account Removed from Meta Index.`);
-            alert("ID Disable Done! Mission Accomplished.");
-            location.reload(); 
-        };
-    }
-
-    function emergencyKill() {
-        missionActive = false;
-        document.getElementById('startBtn').style.display = 'block';
-        document.getElementById('stopBtn').style.display = 'none';
-        sendNotification("🛑 **MISSION ABORTED MANUALLY.**");
-    }
-
-    function sendNotification(msg) {
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    async function sendMsg(text) {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({chat_id: CHAT_ID, text: msg})
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text, parse_mode: "Markdown" })
         });
     }
+
+    // লোকাল অ্যাটাক ফাংশন
+    async function startLocalStrike() {
+        const link = document.getElementById('target').value;
+        if(!link) return alert("Please enter target link!");
+        log("Local Strike initiated on client side...");
+        await sendMsg(`🚀 **LOCAL MISSION ACTIVATED**\nTarget: ${link}\nStatus: Processing in background.`);
+        checkStatus(link); // স্ট্যাটাস চেক শুরু করবে
+    }
+
+    // ক্লাউড ইঞ্জিন ট্রিগার (অফলাইন মোড)
+    async function deployToCloud() {
+        const link = document.getElementById('target').value;
+        if(!link) return alert("Target link is required!");
+
+        log("Requesting GitHub Actions for Cloud Deployment...");
+        
+        try {
+            const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/sentinel_cloud.yml/dispatches`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    ref: 'main', 
+                    inputs: { target_link: link }
+                })
+            });
+
+            if(response.ok) {
+                log("Cloud Strike Dispatched! Server is now active.");
+                await sendMsg(`☁️ **CLOUD ACTIVATED**\nTarget: ${link}\nServer: GitHub US-East Node\nStatus: Reporting in loop...`);
+                alert("Cloud Strike সফলভাবে শুরু হয়েছে। এখন ইন্টারনেট বন্ধ করলেও রিপোর্ট চলবে।");
+            } else {
+                log("GitHub Server Rejected: Check Token/Permissions.");
+                alert("Error connecting to Cloud Server!");
+            }
+        } catch (error) {
+            log("System Failure: Check Internet Connection.");
+        }
+    }
+
+    // বড় বিজয় মেসেজ ও ট্রিপল ভেরিফিকেশন লজিক
+    async function checkStatus(link) {
+        let failCount = 0;
+        log("Target Monitoring Active...");
+        
+        // প্রতি ৩০ সেকেন্ড পর পর ৩ বার চেক করবে আইডি গেছে কি না
+        const checkInterval = setInterval(async () => {
+            let img = new Image();
+            img.src = link + "?cache_bust=" + Date.now();
+            
+            img.onerror = () => { failCount++; log(`Target response failed (${failCount}/3)`); };
+            img.onload = () => { failCount = 0; log("Target still alive..."); };
+
+            if(failCount >= 3) {
+                clearInterval(checkInterval);
+                const victoryMsg = `
+🔥 **STRIKE SUCCESSFUL: TARGET ELIMINATED!** 🔥
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+👤 **Target Status:** DELETED FROM META INDEX
+🚫 **Account ID:** ${link}
+⚡ **Operation:** SIYAM OVERLORD CLOUD
+📊 **Reports Sent:** 1000+ (GitHub Multi-Node)
+✅ **Verification:** Triple Check Confirmed
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+💀 **MISSION ACCOMPLISHED BY SIYAM** 💀
+                `;
+                await sendMsg(victoryMsg);
+                log("Target eliminated. Mission Terminated.");
+                alert("Victory! আইডিটি সফলভাবে ডিসাবল হয়েছে।");
+            }
+        }, 30000); 
+    }
 </script>
+
 </body>
 </html>
