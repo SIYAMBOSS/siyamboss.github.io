@@ -1,36 +1,31 @@
-
-      
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM OVERLORD v21.0 - FINAL FIX</title>
+    <title>SIYAM OVERLORD v21.0 - MULTI-PROXY CLOUD</title>
     <style>
-        body { background: #000; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; padding: 20px; }
-        .container { border: 2px dashed #00ff00; padding: 25px; border-radius: 15px; max-width: 450px; margin: auto; box-shadow: 0 0 15px #00ff00; }
-        input { width: 90%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #00ff00; color: #fff; border-radius: 5px; }
-        .btn { padding: 12px; cursor: pointer; border: none; font-weight: bold; margin: 8px; border-radius: 8px; width: 90%; transition: 0.3s; }
-        .local-btn { background: #00ff00; color: #000; }
-        .cloud-btn { background: #6e5494; color: #fff; }
-        #log { margin-top: 20px; font-size: 11px; text-align: left; height: 160px; overflow-y: auto; background: #050505; padding: 10px; border: 1px solid #333; color: #00ff00; }
+        body { background: #050505; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; padding: 20px; }
+        .box { border: 2px solid #00ff00; padding: 30px; border-radius: 15px; max-width: 450px; margin: auto; box-shadow: 0 0 25px #00ff00; }
+        input { width: 90%; padding: 12px; margin: 15px 0; background: #111; border: 1px solid #00ff00; color: #fff; }
+        .btn { padding: 15px; cursor: pointer; border: none; font-weight: bold; width: 100%; border-radius: 8px; font-size: 16px; margin-bottom: 10px; }
+        .cloud-btn { background: #6e5494; color: #fff; box-shadow: 0 0 15px #6e5494; }
+        #log { margin-top: 20px; font-size: 12px; text-align: left; height: 180px; overflow-y: auto; background: #000; padding: 10px; border: 1px solid #333; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1 style="font-size: 20px; letter-spacing: 3px;">SIYAM OVERLORD</h1>
-    <p>Target FB Link:</p>
-    <input type="text" id="target" placeholder="https://www.facebook.com/...">
+<div class="box">
+    <h1>SIYAM OVERLORD v21.0</h1>
+    <p>Target Profile Link:</p>
+    <input type="text" id="target" placeholder="Enter FB Profile Link">
     
-    <button class="btn local-btn" onclick="startLocalStrike()">⚡ START LOCAL STRIKE</button>
-    <button class="btn cloud-btn" onclick="deployToCloud()">☁️ DEPLOY TO CLOUD (OFFLINE)</button>
+    <button class="btn cloud-btn" onclick="deployUltraStrike()">🚀 DEPLOY MULTI-IP CLOUD STRIKE</button>
     
-    <div id="log">>> [SYSTEM ONLINE] Waiting for Siyam...</div>
+    <div id="log">>> [SYSTEM READY] Cloud Proxy Mode Active...</div>
 </div>
 
 <script>
-    // সিয়াম, আপনার নতুন তথ্যগুলো এখানে বসানো হয়েছে
     const TELEGRAM_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
     const CHAT_ID = "7416528268";
     const REPO_OWNER = "siyamboss"; 
@@ -44,68 +39,47 @@
 
     async function sendMsg(text) {
         const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
-        try {
-            const response = await fetch(url);
-            if(response.ok) log("Telegram: Status Sent.");
-            else log("Telegram: Delivery Failed.");
-        } catch (e) { log("Telegram: Connection Error."); }
+        await fetch(url);
     }
 
-    async function deployToCloud() {
+    async function deployUltraStrike() {
         const link = document.getElementById('target').value;
-        if(!link) return alert("Enter link first!");
-        
-        const token = prompt("GitHub Token (ghp_...) দিন:");
+        if(!link) return alert("Target missing!");
+
+        const token = prompt("Enter GitHub Token (Required for Multi-IP Strike):");
         if(!token) return;
 
-        log("Requesting GitHub Cloud Strike...");
+        log("Initializing Cloud Engine...");
+        log("Switching to US-Based Proxy Nodes...");
+
         try {
+            // এটি সরাসরি গিটহাব সার্ভারে কমান্ড পাঠাবে
             const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/sentinel_cloud.yml/dispatches`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `token ${token}`,
                     'Accept': 'application/vnd.github.v3+json'
                 },
-                body: JSON.stringify({ ref: 'main', inputs: { target_link: link } })
+                body: JSON.stringify({
+                    ref: 'main', 
+                    inputs: { target_link: link }
+                })
             });
 
             if(response.ok) {
-                log("Cloud Strike Dispatched!");
-                await sendMsg(`☁️ **CLOUD ACTIVATED**\nTarget: ${link}\nStatus: Running on GitHub Server`);
+                log("STRIKE DISPATCHED SUCCESSFULLY!");
+                log("Server is using rotating IPs to bypass Meta security.");
+                await sendMsg(`🔥 **ULTRA CLOUD MISSION START** 🔥\n\nTarget: ${link}\nMode: Multi-IP Proxy Strike\nStatus: Reporting from GitHub Server Node.`);
+                alert("মিশন শুরু হয়েছে! এখন আপনার নেট বন্ধ থাকলেও গিটহাবের হাজার হাজার সার্ভার আইপি থেকে রিপোর্ট যাবে।");
             } else {
-                log("Cloud Error: Access Denied.");
-                alert("GitHub Token-টি সম্ভবত ভুল বা এক্সপায়ার হয়ে গেছে।");
+                log("Cloud Error: Connection Refused.");
+                alert("আপনার টোকেনটি কাজ করছে না। দয়া করে নতুন টোকেন তৈরি করুন।");
             }
-        } catch (e) { log("Cloud: Request Failed."); }
-    }
-
-    function startLocalStrike() {
-        const link = document.getElementById('target').value;
-        if(!link) return alert("Target missing!");
-        log("Monitoring Target...");
-        sendMsg(`🚀 **STRIKE STARTED**\nTarget: ${link}`);
-        checkStatus(link);
-    }
-
-    async function checkStatus(link) {
-        let failCount = 0;
-        const interval = setInterval(async () => {
-            let img = new Image();
-            img.src = link + "?cb=" + Date.now();
-            img.onerror = async () => { 
-                failCount++;
-                log(`Verify: ${failCount}/3`);
-                if(failCount >= 3) {
-                    clearInterval(interval);
-                    const victory = `🔥 **MISSION SUCCESSFUL!** 🔥\n━━━━━━━━━━━━━━━\n👤 **Target:** ${link}\n💀 **DELETED BY SIYAM**`;
-                    await sendMsg(victory);
-                    alert("ID Eliminated!");
-                }
-            };
-            img.onload = () => { failCount = 0; };
-        }, 30000);
+        } catch (e) {
+            log("Critical System Error!");
+        }
     }
 </script>
+
 </body>
 </html>
-  
