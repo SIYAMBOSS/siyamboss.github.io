@@ -1,129 +1,115 @@
-<!DOCTYPE html>
+
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM OVERLORD v21.0 - FINAL STRIKE</title>
+    <title>SIYAM OVERLORD</title>
     <style>
-        body { background: #000; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; padding: 20px; }
-        .container { border: 2px dashed #00ff00; padding: 30px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 0 20px #00ff00; }
-        input { width: 90%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #00ff00; color: #fff; border-radius: 5px; }
-        .btn { padding: 12px 25px; cursor: pointer; border: none; font-weight: bold; margin: 10px; border-radius: 8px; transition: 0.3s; width: 85%; }
-        .local-btn { background: #00ff00; color: #000; }
-        .cloud-btn { background: #6e5494; color: #fff; }
-        #log { margin-top: 25px; font-size: 12px; text-align: left; height: 180px; overflow-y: auto; background: #050505; padding: 15px; border: 1px solid #333; }
+        body {
+            background-color: #000;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            border: 2px dashed #00ff00;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 350px;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        h1 { letter-spacing: 5px; margin-bottom: 30px; }
+        input {
+            width: 90%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #00ff00;
+            color: #fff;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-strike { background-color: #00ff00; color: #000; }
+        .btn-cloud { background-color: #6a5acd; color: #fff; }
+        .console {
+            background: #000;
+            border: 1px solid #333;
+            height: 150px;
+            margin-top: 20px;
+            text-align: left;
+            padding: 10px;
+            font-size: 12px;
+            overflow-y: auto;
+            color: #00ff00;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 style="letter-spacing: 5px;">SIYAM OVERLORD</h1>
-    <p>Target Profile Link:</p>
-    <input type="text" id="target" placeholder="https://www.facebook.com/id_link">
+    <h1>SIYAM OVERLORD</h1>
+    <p style="color: #00ff00; font-size: 12px;">Target Profile Link:</p>
+    <input type="text" id="targetLink" placeholder="https://www.facebook.com/example">
     
-    <button class="btn local-btn" onclick="startLocalStrike()">⚡ START LOCAL STRIKE</button>
-    <button class="btn cloud-btn" onclick="deployToCloud()">☁️ DEPLOY TO CLOUD (OFFLINE)</button>
-    
-    <div id="log">>> [SYSTEM READY] Waiting for command...</div>
+    <button class="btn-strike" onclick="startStrike()">⚡ START LOCAL STRIKE</button>
+    <button class="btn-cloud">☁️ DEPLOY TO CLOUD (ONLINE)</button>
+
+    <div class="console" id="console">
+        >> [SYSTEM READY] Waiting for command...<br>
+    </div>
 </div>
 
 <script>
-    // Siyam, apnar Telegram info ekhane securely add kora hoyeche
-    const TELEGRAM_BOT_TOKEN = "7963725547:AAHDlM4f6L6w3V0L-H8R6tGof0U46iB6S-g";
-    const TELEGRAM_CHAT_ID = "7154942953";
-    const REPO_OWNER = "siyamboss"; 
-    const REPO_NAME = "siyamboss.github.io";
+    const BOT_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
+    const CHAT_ID = "7416528268";
 
-    function log(msg) {
-        const logBox = document.getElementById('log');
-        logBox.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > ${msg}</div>`;
-        logBox.scrollTop = logBox.scrollHeight;
+    function logToConsole(message) {
+        const consoleDiv = document.getElementById('console');
+        const time = new Date().toLocaleTimeString();
+        consoleDiv.innerHTML += `[${time}] > ${message}<br>`;
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
     }
 
-    // Telegram SMS pathanor fixed function
-    async function sendMsg(text) {
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+    async function startStrike() {
+        const link = document.getElementById('targetLink').value;
+        if (!link) {
+            logToConsole("Error: No link provided!");
+            return;
+        }
+
+        logToConsole("Local Monitoring Started...");
+        
+        // Telegram API Call
+        const message = `🚀 *New Strike Command*\n\nTarget: ${link}\nStatus: Active`;
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
         try {
             const response = await fetch(url);
-            if(response.ok) {
-                log("Telegram: Status Sent!");
+            if (response.ok) {
+                logToConsole("Success: Telegram Bot Notified.");
             } else {
-                log("Telegram Error: Check Bot Token.");
-            }
-        } catch (e) {
-            log("Telegram: Connection Failed!");
-        }
-    }
-
-    async function deployToCloud() {
-        const link = document.getElementById('target').value;
-        if(!link) return alert("Target link is required!");
-
-        const token = prompt("Enter your GitHub Personal Access Token:");
-        if(!token) return alert("Token chara cloud strike hobe na!");
-
-        log("Connecting to GitHub Server...");
-        try {
-            const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/sentinel_cloud.yml/dispatches`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify({
-                    ref: 'main', 
-                    inputs: { target_link: link }
-                })
-            });
-
-            if(response.ok) {
-                log("Cloud Strike Dispatched!");
-                await sendMsg(`☁️ **CLOUD ACTIVATED**\nTarget: ${link}\nServer: GitHub US Node\nStatus: Online Strike Active.`);
-                alert("Cloud strike shuru! Ekhon net bondho korle-o reporting cholbe.");
-            } else {
-                log("GitHub: Connection Refused.");
-                alert("Token vul ba setup-e problem!");
+                logToConsole("Error: Check Bot Token or Chat ID.");
             }
         } catch (error) {
-            log("System Failure!");
+            logToConsole("Network Error: Failed to connect.");
         }
-    }
-
-    async function startLocalStrike() {
-        const link = document.getElementById('target').value;
-        if(!link) return alert("Target Link din!");
-        log("Local Monitoring Started...");
-        await sendMsg(`🚀 **STRIKE INITIATED**\nTarget: ${link}\nMode: Monitoring...`);
-        checkStatus(link);
-    }
-
-    // Victory logic with Triple Verification
-    async function checkStatus(link) {
-        let failCount = 0;
-        const checkInterval = setInterval(async () => {
-            let img = new Image();
-            img.src = link + "?v=" + Date.now();
-            img.onerror = async () => { 
-                failCount++; 
-                log(`Check: Target not responding (${failCount}/3)`);
-                if(failCount >= 3) {
-                    clearInterval(checkInterval);
-                    const victoryMsg = `
-🔥 **MISSION ACCOMPLISHED!** 🔥
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-👤 **Target:** ${link}
-⚡ **Status:** REMOVED FROM META INDEX
-🚫 **Verified:** SIYAM OVERLORD v21.0
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-💀 **VICTORY FOR SIYAM** 💀`;
-                    await sendMsg(victoryMsg); // Telegram-e SMS pathabe
-                    alert("ID Disabled! Victory message Telegram-e pathano hoyeche.");
-                }
-            };
-            img.onload = () => { failCount = 0; log("Target still online..."); };
-        }, 30000); 
     }
 </script>
 
 </body>
 </html>
+        
