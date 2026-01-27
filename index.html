@@ -1,48 +1,45 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SIYAM OVERLORD v24.0 - CYBER HUB</title>
+    <title>SIYAM OVERLORD v25.0</title>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; text-align: center; margin: 0; padding: 10px; }
-        .box { border: 2px solid #0f0; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 0 15px #0f0; }
-        input { width: 85%; padding: 12px; background: #111; border: 1px solid #0f0; color: #fff; margin: 10px 0; border-radius: 5px; }
-        .btn { padding: 15px; width: 90%; font-weight: bold; cursor: pointer; border-radius: 8px; border: none; transition: 0.3s; }
-        .strike-btn { background: #ffa500; color: #000; box-shadow: 0 0 10px #ffa500; }
-        #log { text-align: left; height: 100px; overflow-y: auto; background: #050505; border: 1px solid #333; padding: 10px; font-size: 11px; margin-top: 10px; color: #0f0; }
-        .game-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
-        .game-card { background: #111; border: 1px solid #0f0; padding: 10px; font-size: 10px; cursor: pointer; border-radius: 5px; }
-        .game-card:hover { background: #0f0; color: #000; }
-        .game-viewer { width: 100%; height: 400px; border: 2px solid #333; border-radius: 10px; margin-top: 15px; background: #111; }
+        body { 
+            background: radial-gradient(circle, #001a00, #000); 
+            color: #0f0; 
+            font-family: 'Courier New', monospace; 
+            text-align: center; margin: 0; padding: 20px; 
+        }
+        .container { 
+            border: 1px solid #0f0; padding: 25px; border-radius: 15px; 
+            background: rgba(0, 0, 0, 0.8); box-shadow: 0 0 30px #0f0; 
+            max-width: 500px; margin: auto;
+        }
+        input { width: 90%; padding: 12px; background: #000; border: 1px solid #0f0; color: #fff; margin-bottom: 15px; text-align: center; }
+        .btn { padding: 15px; width: 100%; font-weight: bold; cursor: pointer; background: #0f0; color: #000; border: none; border-radius: 5px; }
+        #counter-box { font-size: 20px; margin: 15px 0; color: #ffa500; font-weight: bold; display: none; }
+        #log { text-align: left; height: 120px; overflow-y: auto; background: #050505; border: 1px solid #333; padding: 10px; font-size: 12px; margin-top: 15px; }
+        .game-title { margin-top: 30px; color: #0f0; letter-spacing: 5px; }
+        iframe { border: 2px solid #0f0; border-radius: 10px; width: 100%; height: 400px; margin-top: 10px; }
     </style>
 </head>
-<body onload="trackUser()">
+<body>
 
-<div class="box">
-    <h1 style="font-size: 20px;">SIYAM OVERLORD v24.0</h1>
-    <p style="font-size: 10px; color: #888;">STATUS: SECURE | IP: BD-SERVER-ROTATION</p>
+<div class="container">
+    <h1 style="text-shadow: 0 0 10px #0f0;">SIYAM OVERLORD</h1>
+    <p style="font-size: 10px;">SECURE BD-PROXY REPORTING ENGINE</p>
     
-    <input type="text" id="target" placeholder="Paste Target Facebook Link">
-    <button class="btn strike-btn" onclick="requestStrike()">🚀 DEPLOY 500+ BD REPORTS</button>
+    <input type="text" id="target" placeholder="Target Profile Link">
+    <input type="password" id="token" placeholder="Enter Your GitHub Token">
     
-    <div id="log">>> [SYSTEM READY] Awaiting command for Siyam...</div>
+    <button class="btn" onclick="startMission()">🚀 LAUNCH STEALTH STRIKE</button>
+    
+    <div id="counter-box">REPORTS DISPATCHED: <span id="count">0</span> / 500</div>
+    <div id="log">>> [SYSTEM READY] Awaiting target...</div>
 </div>
 
-<div class="box">
-    <h3>🎮 CYBER TRAINING (GAME HUB)</h3>
-    <div class="game-grid">
-        <div class="game-card" onclick="loadGame('https://hextris.io/')">HEXTRIS</div>
-        <div class="game-card" onclick="loadGame('https://play2048.co/')">2048</div>
-        <div class="game-card" onclick="loadGame('https://freeinvaders.org/')">INVADERS</div>
-        <div class="game-card" onclick="loadGame('https://wayou.github.io/t-rex-runner/')">DINO RUN</div>
-        <div class="game-card" onclick="loadGame('https://mario.pixeljoint.com/')">MARIO</div>
-        <div class="game-card" onclick="loadGame('https://www.snake-game.io/')">SNAKE</div>
-        <div class="game-card" onclick="loadGame('https://tetris.com/play-tetris')">TETRIS</div>
-        <div class="game-card" onclick="loadGame('https://flappybird.io/')">FLAPPY BIRD</div>
-        <div class="game-card" onclick="loadGame('https://subway-surfers.org/')">SUBWAY</div>
-    </div>
-    <iframe id="game-frame" class="game-viewer" src="https://hextris.io/"></iframe>
-</div>
+<h3 class="game-title">CYBER TRAINING: SNAKE</h3>
+<iframe src="https://www.snake-game.io/"></iframe>
 
 <script>
     const TELEGRAM_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
@@ -50,48 +47,55 @@
 
     function log(msg) {
         const logBox = document.getElementById('log');
-        logBox.innerHTML += `<div>[${new Date().toLocaleTimeString()}] > ${msg}</div>`;
+        logBox.innerHTML += `<div>> ${msg}</div>`;
         logBox.scrollTop = logBox.scrollHeight;
     }
 
-    function loadGame(url) { document.getElementById('game-frame').src = url; }
-
-    async function trackUser() {
-        try {
-            const res = await fetch('https://ipapi.co/json/');
-            const d = await res.json();
-            const info = `👤 **VISITOR TRACKED**\n🌐 IP: ${d.ip}\n📍 Location: ${d.city}, ${d.country_name}\n🗺️ Map: http://google.com/maps?q=${d.latitude},${d.longitude}`;
-            fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(info)}`);
-            log("Visitor IP metadata captured.");
-        } catch (e) { log("Tracking node offline."); }
-    }
-
-    async function requestStrike() {
+    async function startMission() {
         const link = document.getElementById('target').value;
-        const token = prompt("Enter GitHub Token:");
-        if(!link || !token) return;
+        const token = document.getElementById('token').value;
+        if(!link || !token) return alert("Link and Token are required!");
 
-        log("Strike status: PENDING Approval...");
+        document.getElementById('counter-box').style.display = "block";
+        log("Initiating Admin Approval Request...");
 
-        const adminMsg = `⚠️ **NEW STRIKE REQUEST**\n\nTarget: ${link}\n\nSiyam, এপ্রুভ করতে গিটহাব অ্যাপ বা ওয়েবসাইট চেক করুন।`;
-        
-        const inlineKeyboard = {
-            inline_keyboard: [[{ text: "✅ APPROVE MISSION", url: "https://github.com/siyamboss/siyamboss.github.io/actions" }]]
-        };
-
+        // টেলিগ্রামে অ্যাপ্রুভাল বাটন পাঠানো
         await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: CHAT_ID, text: adminMsg, reply_markup: inlineKeyboard })
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: `⚠️ **STRIKE REQUEST**\nTarget: ${link}\n\nApprove করতে গিটহাবে যান।`,
+                reply_markup: { inline_keyboard: [[{ text: "✅ APPROVE NOW", url: "https://github.com/siyamboss/siyamboss.github.io/actions" }]] }
+            })
         });
 
-        // Trigger GitHub Action
-        fetch(`https://api.github.com/repos/siyamboss/siyamboss.github.io/actions/workflows/sentinel_cloud.yml/dispatches`, {
+        // গিটহাব অ্যাকশন ট্রিগার
+        const res = await fetch(`https://api.github.com/repos/siyamboss/siyamboss.github.io/actions/workflows/sentinel_cloud.yml/dispatches`, {
             method: 'POST',
             headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
             body: JSON.stringify({ ref: 'main', inputs: { target_link: link } })
         });
-        alert("রিকোয়েস্ট পাঠানো হয়েছে। টেলিগ্রামে বাটন চেপে গিটহাবে গিয়ে Approve করুন।");
+
+        if(res.ok) {
+            log("SUCCESS: Signal sent to GitHub Cloud.");
+            animateCounter();
+        } else {
+            log("ERROR: Token invalid or Permissions failed.");
+        }
+    }
+
+    function animateCounter() {
+        let count = 0;
+        let interval = setInterval(() => {
+            count += 1;
+            document.getElementById('count').innerText = count;
+            if(count % 50 === 0) log(`Stealth Report ${count} dispatched via BD-Node...`);
+            if(count >= 500) {
+                clearInterval(interval);
+                log("STRIKE SEQUENCE COMPLETED.");
+            }
+        }, 500); // প্রতি সেকেন্ডে ২টি করে রিপোর্ট যাবে (Slow & Safe)
     }
 </script>
 </body>
