@@ -2,127 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM OSINT | PREMIUM</title>
+    <title>SIYAM OSINT | SECURE ACCESS</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        :root { --neon: #00d2ff; --bg: #050505; }
-        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        
-        /* Glassmorphism Container */
-        .card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(0, 210, 255, 0.2); padding: 25px; border-radius: 16px; width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
-        .card::before { content: ""; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 18px; background: linear-gradient(45deg, var(--neon), transparent, var(--neon)); z-index: -1; opacity: 0.3; }
-
-        h2 { font-size: 16px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; color: var(--neon); text-shadow: 0 0 10px var(--neon); }
-        
-        input { width: 100%; box-sizing: border-box; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid #222; border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 15px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
-
-        .btn { width: 100%; padding: 12px; background: var(--neon); color: #000; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
-        .btn:hover { box-shadow: 0 0 20px var(--neon); transform: translateY(-2px); }
-
-        /* Result Section */
-        #result { display: none; margin-top: 20px; text-align: left; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .divider { height: 1px; background: rgba(0, 210, 255, 0.2); margin: 15px 0; }
-        .label { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 4px; }
-        .val-name { font-size: 19px; font-weight: 700; color: #fff; margin: 0; }
-        
-        .sim-info { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-        .sim-logo { width: 20px; height: 20px; border-radius: 4px; object-fit: contain; }
-        .val-carrier { font-size: 14px; color: var(--neon); font-weight: 600; }
-
-        .action-links { display: flex; gap: 15px; margin-top: 15px; }
-        .action-links a { color: var(--neon); text-decoration: none; font-size: 12px; font-weight: 600; padding: 5px 10px; border: 1px solid rgba(0, 210, 255, 0.3); border-radius: 5px; transition: 0.3s; }
-        .action-links a:hover { background: var(--neon); color: #000; }
-
-        /* Loader */
-        #loader { display: none; width: 20px; height: 20px; border: 2px solid #222; border-top: 2px solid var(--neon); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 10px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body { background: #050505; color: #00d2ff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: #111; padding: 30px; border-radius: 15px; border: 1px solid #222; text-align: center; width: 320px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #00d2ff; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>Siyam Search</h2>
-    <input type="text" id="phone" placeholder="+8801XXXXXXXXX">
-    <button class="btn" onclick="runSearch()">Identify Target</button>
-    <div id="loader"></div>
-
-    <div id="result">
-        <div class="divider"></div>
-        <p class="label">Truecaller Database</p>
-        <p class="val-name" id="name">Searching...</p>
-        
-        <div class="sim-info">
-            <img id="logo" src="" class="sim-logo" style="display:none;">
-            <span class="val-carrier" id="carrier">Checking...</span>
-        </div>
-
-        <div class="action-links">
-            <a id="wa" href="#" target="_blank">WhatsApp</a>
-            <a id="tg" href="#" target="_blank">Telegram</a>
-        </div>
+    <h2>SIYAM OSINT</h2>
+    <div id="reg_box">
+        <input type="email" id="email" placeholder="Enter Gmail">
+        <input type="tel" id="phone" placeholder="Enter Phone">
+        <button onclick="sendOTP()">Get Access Code</button>
     </div>
+    <div id="otp_box" style="display:none;">
+        <p>Check your Email</p>
+        <input type="text" id="otp_input" placeholder="Enter 6-digit OTP">
+        <button onclick="verifyOTP()">Verify & Join</button>
+    </div>
+    <p id="msg" style="font-size: 12px; color: #555;"></p>
 </div>
 
 <script>
-    const TELEGRAM_URL = "https://api.telegram.org/bot8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE/sendMessage";
-    const CHAT_ID = "7416528268";
+    // তোমার অরিজিনাল ফায়ারবেস ডাটা
+    const firebaseConfig = {
+        apiKey: "AIzaSyD1-PJ5IoV1TUQaqoWmiIycNSv59Ao6fwE",
+        authDomain: "siyam-osint.firebaseapp.com",
+        projectId: "siyam-osint",
+        databaseURL: "https://siyam-osint-default-rtdb.firebaseio.com",
+        appId: "1:887272758284:web:e0031ef34a59f15f976229"
+    };
 
-    async function runSearch() {
-        const num = document.getElementById('phone').value;
-        if(num.length < 11) return alert("Enter valid number!");
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    emailjs.init("UXD-j5EDEpvHR7cLY"); // তোমার পাবলিক কি
 
-        const loader = document.getElementById('loader');
-        const resDiv = document.getElementById('result');
-        const nameEl = document.getElementById('name');
+    let generatedOTP;
 
-        loader.style.display = 'block';
-        resDiv.style.display = 'none';
-
-        // সামাজিক যোগাযোগ লিংক
-        document.getElementById('wa').href = `https://wa.me/${num}`;
-        document.getElementById('tg').href = `https://t.me/+88${num}`;
-
-        // সিম লজিক
-        const logo = document.getElementById('logo');
-        const carrier = document.getElementById('carrier');
-        logo.style.display = 'block';
+    function sendOTP() {
+        const email = document.getElementById('email').value;
+        generatedOTP = Math.floor(100000 + Math.random() * 900000);
         
-        if(/017|013/.test(num)) {
-            carrier.innerText = "Grameenphone";
-            logo.src = "https://img.icons8.com/color/48/grameenphone.png";
-        } else if(/019|014/.test(num)) {
-            carrier.innerText = "Banglalink";
-            logo.src = "https://img.icons8.com/color/48/banglalink.png";
-        } else if(/018/.test(num)) {
-            carrier.innerText = "Robi";
-            logo.src = "https://img.icons8.com/color/48/robi.png";
-        } else {
-            logo.style.display = 'none';
-            carrier.innerText = "Unknown Network";
-        }
+        emailjs.send("service_2buy85h", "template_62xzbei", {
+            to_email: email,
+            otp: generatedOTP
+        }).then(() => {
+            document.getElementById('reg_box').style.display = 'none';
+            document.getElementById('otp_box').style.display = 'block';
+        }).catch(() => alert("EmailJS Error! Check permission."));
+    }
 
-        try {
-            // সিয়াম, এখানে একটি হাই-স্পিড গেটওয়ে ব্যবহার করা হয়েছে
-            const response = await fetch(`https://osint-true-api.vercel.app/api/search?phone=${num}`);
-            const data = await response.json();
-
-            loader.style.display = 'none';
-            resDiv.style.display = 'block';
-
-            if(data.name && data.name !== "Not Found") {
-                nameEl.innerText = data.name;
-                fetch(`${TELEGRAM_URL}?chat_id=${CHAT_ID}&text=Siyam Search: ${num} Name: ${data.name}`);
-            } else {
-                nameEl.innerText = "Not Found";
-            }
-        } catch (e) {
-            loader.style.display = 'none';
-            resDiv.style.display = 'block';
-            nameEl.innerText = "Not Found";
-        }
+    function verifyOTP() {
+        const userOTP = document.getElementById('otp_input').value;
+        const email = document.getElementById('email').value;
+        if(userOTP == generatedOTP) {
+            db.ref('users').once('value', snapshot => {
+                const id = "User " + (snapshot.numChildren() + 1);
+                db.ref('users/' + id).set({ email: email, id: id });
+                alert("Welcome " + id);
+            });
+        } else { alert("Wrong OTP!"); }
     }
 </script>
 </body>
