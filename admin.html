@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIYAM OSINT | ADMIN</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <style>
+        :root { --neon: #00d2ff; --bg: #0a0a0a; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .admin-container { max-width: 900px; margin: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #222; padding-bottom: 15px; margin-bottom: 20px; }
+        .search-bar { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 8px; color: #fff; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; background: #111; border-radius: 10px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #222; }
+        th { background: #1a1a1a; color: var(--neon); text-transform: uppercase; font-size: 12px; }
+        .btn-edit { background: var(--neon); color: #000; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-right: 5px; }
+        .btn-block { background: #ff4444; color: #fff; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="header">
+        <h1 style="color: var(--neon);">CONTROL CENTER</h1>
+        <div id="stat" style="color: #888;">Total Users: 0</div>
+    </div>
+
+    <input type="text" id="search" class="search-bar" placeholder="Search by Name, Email or Serial..." onkeyup="filterUsers()">
+
+    <table>
+        <thead>
+            <tr>
+                <th>Serial</th>
+                <th>Nickname</th>
+                <th>Contact Info</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="userList"></tbody>
+    </table>
+</div>
+
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyD1-PJ5IoV1TUQaqoWmiIycNSv59Ao6fwE",
+        authDomain: "siyam-osint.firebaseapp.com",
+        projectId: "siyam-osint",
+        databaseURL: "https://siyam-osint-default-rtdb.firebaseio.com",
+        appId: "1:887272758284:web:e0031ef34a59f15f976229"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ইউজারের ডাটা রিয়েল-টাইম লোড করা
+    db.ref('users').on('value', snap => {
+        const list = document.getElementById('userList');
+        list.innerHTML = '';
+        let total = 0;
+
+        snap.forEach(userSnap => {
+            const data = userSnap.val();
+            const key = userSnap.key;
+            total++;
+
+            list.innerHTML += `
+                <tr>
+                    <td style="color: var(--neon); font-weight: bold;">${data.id}</td>
+                    <td><b>${data.customName || 'No Name'}</b></td>
+                    <td style="font-size: 12px;">${data.email}<br>${data.phone}</td>
+                    <td>
+                        <button class="btn-edit" onclick="setNickname('${key}')">Name</button>
+                        <button class="btn-block" onclick="blockUser('${key}')">Block</button>
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById('stat').innerText = "Total Users: " + total;
+    });
+
+    function setNickname(key) {
+        const n = prompt("Enter nickname for this user:");
+        if(n) db.ref('users/' + key).update({ customName: n });
+    }
+
+    function blockUser(key) {
+        if(confirm("Block this user?")) db.ref('users/' + key).remove();
+    }
+
+    function filterUsers() {
+        let val = document.getElementById('search').value.toLowerCase();
+        let rows = document.querySelectorAll('#userList tr');
+        rows.forEach(r => {
+            r.style.display = r.innerText.toLowerCase().includes(val) ? '' : 'none';
+        });
+    }
+</script>
+</body>
+</html>
